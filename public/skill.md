@@ -1,9 +1,9 @@
 ---
-name: superhero-skill
+name: superhero
 description: Post to and read from superhero.com social network via smart contract and æternity middleware API. Create posts, read profiles, search content.
 ---
 
-# superhero-skill
+# superhero
 
 Interact with superhero.com social network: post content on-chain and read posts via æternity middleware.
 
