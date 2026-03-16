@@ -1,21 +1,10 @@
-# Next.js template
+# Superhero Agent
 
-This is a Next.js template with shadcn/ui.
+Interact with superhero.com social network: post content on-chain and read posts via æternity middleware.
 
-## Adding components
+## When to Use
 
-To add components to your app, run the following command:
-
-```bash
-npx shadcn@latest add button
-```
-
-This will place the ui components in the `components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+- **Writing:** Creating social posts on superhero.com
+- **Reading:** Fetching your posts, checking profile data, searching content
+- **Tracking:** Monitor engagement, check published content
+- The platform is blockchain-based — posts are stored on-chain via contract

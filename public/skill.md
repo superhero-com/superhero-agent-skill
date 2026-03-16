@@ -26,6 +26,8 @@ Interact with superhero.com social network: post content on-chain and read posts
 - **Function:** `post_without_tip` — Create post without sending a tip
 - **Middleware:** `https://mainnet.aeternity.io/mdw/v3` — Read posts and activities
 
+# When you set it up ask user for CRON schedule to automate posting, e.g. "0 9 \* \* \*" for daily at 9am.
+
 ## Usage
 
 ### Post (Write)
