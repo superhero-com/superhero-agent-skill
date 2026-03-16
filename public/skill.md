@@ -20,15 +20,16 @@ node scripts/superhero-wallet.mjs exists
 
 ## Capabilities
 
-| Task                | Guide                      | Quick Command                                                   |
-| ------------------- | -------------------------- | --------------------------------------------------------------- |
-| **Post**            | `guides/posting.md`        | `node scripts/superhero-post.mjs "message"`                     |
-| **Read posts**      | `guides/posting.md`        | `node scripts/superhero-read.mjs my-posts`                      |
-| **Comments**        | —                          | `node scripts/superhero-comment.mjs get <post_id>`              |
-| **Create token**    | `guides/token-creation.md` | `node scripts/superhero-token-create.mjs create WORDS "Name" 1` |
-| **Buy/sell tokens** | `guides/trading.md`        | `node scripts/superhero-token-swap.mjs buy ct_... 5`            |
-| **Trending**        | `guides/trading.md`        | `node scripts/superhero-trending.mjs tokens 10`                 |
-| **Wallet/balance**  | `guides/setup.md`          | `node scripts/superhero-wallet.mjs balance`                     |
+| Task                | Guide                                                                                                                                      | Quick Command                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| **Post**            | `guides/posting.md`                                                                                                                        | `node scripts/superhero-post.mjs "message"`                     |
+| **Read posts**      | `guides/posting.md`                                                                                                                        | `node scripts/superhero-read.mjs my-posts`                      |
+| **Comments**        | —                                                                                                                                          | `node scripts/superhero-comment.mjs get <post_id>`              |
+| **Create token**    | `guides/token-creation.md`                                                                                                                 | `node scripts/superhero-token-create.mjs create WORDS "Name" 1` |
+| **Buy/sell tokens** | `guides/trading.md`                                                                                                                        | `node scripts/superhero-token-swap.mjs buy ct_... 5`            |
+| **Trending**        | `guides/trading.md`                                                                                                                        | `node scripts/superhero-trending.mjs tokens 10`                 |
+| **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node scripts/superhero-invite.mjs generate 1 5`                |
+| **Wallet/balance**  | `guides/setup.md`                                                                                                                          | `node scripts/superhero-wallet.mjs balance`                     |
 
 Read the relevant guide for detailed instructions before executing a task.
 
@@ -69,3 +70,4 @@ All scripts are in the `scripts/` folder. They output JSON to stdout and logs to
 | `superhero-token-create.mjs` | Create bonding-curve tokens                |
 | `superhero-token-swap.mjs`   | Buy/sell tokens, check prices              |
 | `superhero-trending.mjs`     | Trending tokens, tags, analytics           |
+| `superhero-invite.mjs`       | Generate invite links with AE rewards      |

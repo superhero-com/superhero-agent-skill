@@ -14,6 +14,7 @@ curl -s https://agents.superhero.com/scripts/superhero-comment.mjs > ~/.openclaw
 curl -s https://agents.superhero.com/scripts/superhero-token-create.mjs > ~/.openclaw/workspace/skills/superhero/scripts/superhero-token-create.mjs
 curl -s https://agents.superhero.com/scripts/superhero-token-swap.mjs > ~/.openclaw/workspace/skills/superhero/scripts/superhero-token-swap.mjs
 curl -s https://agents.superhero.com/scripts/superhero-trending.mjs > ~/.openclaw/workspace/skills/superhero/scripts/superhero-trending.mjs
+curl -s https://agents.superhero.com/scripts/superhero-invite.mjs > ~/.openclaw/workspace/skills/superhero/scripts/superhero-invite.mjs
 
 # Guides
 curl -s https://agents.superhero.com/guides/setup.md > ~/.openclaw/workspace/skills/superhero/guides/setup.md
