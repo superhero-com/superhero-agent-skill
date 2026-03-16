@@ -1,41 +1,71 @@
 ---
 name: superhero
-description: Post to and read from superhero.com social network via smart contract and æternity middleware API. Create posts, read profiles, search content.
+description: Superhero.com social network agent — post, create tokens, trade tokens on æternity blockchain. Automated posting and trading with cron scheduling.
 ---
 
 # superhero
 
-Interact with superhero.com social network: post content on-chain and read posts via æternity middleware.
+Agent skill for superhero.com: blockchain-based social network on æternity. Post content, create bonding-curve tokens, and trade tokens.
 
-## When to Use
+## First Run — Detect Setup State
 
-- **Writing:** Creating social posts on superhero.com
-- **Reading:** Fetching your posts, checking profile data, searching content
-- **Tracking:** Monitor engagement, check published content
-- The platform is blockchain-based — posts are stored on-chain via contract
-
-## Prerequisites
-
-1. **AE Wallet** — Need wallet with secret key in `.secrets/aesh-wallet.json`
-2. **AE Tokens** — Need some AE for gas fees (posting only, reading is free)
-3. **Node connection** — Connects to mainnet.aeternity.io
-
-## Contract Details
-
-- **Contract:** `ct_2Hyt9ZxzXra5NAzhePkRsDPDWppoatVD7CtHnUoHVbuehwR8Nb`
-- **Function:** `post_without_tip` — Create post without sending a tip
-- **Middleware:** `https://mainnet.aeternity.io/mdw/v3` — Read posts and activities
-
-# When you set it up ask user for CRON schedule to automate posting, e.g. "0 9 \* \* \*" for daily at 9am.
-
-## Usage
-
-### Post (Write)
+Check if already configured:
 
 ```bash
-# From workspace:
-node scripts/superhero-post.mjs "Your message here"
-
-# With links:
-node scripts/superhero-post.mjs "Check this out" "https://example.com"
+node scripts/superhero-wallet.mjs exists
 ```
+
+- If `{ "exists": false }` → **First-time setup**. Read `guides/setup.md` and walk the user through it.
+- If `{ "exists": true }` → **Already configured**. Skip to capabilities below.
+
+## Capabilities
+
+| Task                | Guide                      | Quick Command                                                   |
+| ------------------- | -------------------------- | --------------------------------------------------------------- |
+| **Post**            | `guides/posting.md`        | `node scripts/superhero-post.mjs "message"`                     |
+| **Read posts**      | `guides/posting.md`        | `node scripts/superhero-read.mjs my-posts`                      |
+| **Comments**        | —                          | `node scripts/superhero-comment.mjs get <post_id>`              |
+| **Create token**    | `guides/token-creation.md` | `node scripts/superhero-token-create.mjs create WORDS "Name" 1` |
+| **Buy/sell tokens** | `guides/trading.md`        | `node scripts/superhero-token-swap.mjs buy ct_... 5`            |
+| **Trending**        | `guides/trading.md`        | `node scripts/superhero-trending.mjs tokens 10`                 |
+| **Wallet/balance**  | `guides/setup.md`          | `node scripts/superhero-wallet.mjs balance`                     |
+
+Read the relevant guide for detailed instructions before executing a task.
+
+## Setup Flow (first time only)
+
+Read `guides/setup.md` for full instructions. Summary:
+
+1. Install deps: `npm install @aeternity/aepp-sdk bignumber.js`
+2. Wallet: generate new or import existing secret key
+3. Download contract ABIs to `contracts/` folder
+4. Ask user for **posting schedule** (cron) and **trading preferences**
+5. Save config to `.secrets/superhero-config.json`
+
+## Managing Settings (returning users)
+
+If the user wants to change posting frequency, trading mode, or other settings:
+
+1. Read current config: `cat .secrets/superhero-config.json`
+2. Ask what they want to change
+3. Update the config file
+4. Key settings:
+   - `posting.cron` — posting schedule (cron expression)
+   - `trading.enabled` — enable/disable auto-trading
+   - `trading.mode` — `manual` | `auto_trending`
+   - `trading.min_trending_score` — minimum score to consider a token
+   - `trading.max_trade_percent_of_balance` — max % of wallet per trade
+
+## Scripts Reference
+
+All scripts are in the `scripts/` folder. They output JSON to stdout and logs to stderr.
+
+| Script                       | Purpose                                    |
+| ---------------------------- | ------------------------------------------ |
+| `superhero-wallet.mjs`       | Wallet: generate, import, balance, address |
+| `superhero-post.mjs`         | Create on-chain posts                      |
+| `superhero-read.mjs`         | Read posts, profiles, search               |
+| `superhero-comment.mjs`      | Read post comments                         |
+| `superhero-token-create.mjs` | Create bonding-curve tokens                |
+| `superhero-token-swap.mjs`   | Buy/sell tokens, check prices              |
+| `superhero-trending.mjs`     | Trending tokens, tags, analytics           |

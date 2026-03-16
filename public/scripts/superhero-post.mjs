@@ -1,5 +1,6 @@
-// Post to superhero.com via contract call on æternity mainnet
-import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
+#!/usr/bin/env node
+// Post to superhero.com via Tipping_v3 contract on æternity mainnet
+import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 
 const CONTRACT_ADDRESS = 'ct_2Hyt9ZxzXra5NAzhePkRsDPDWppoatVD7CtHnUoHVbuehwR8Nb';
@@ -7,47 +8,51 @@ const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
 
 async function main() {
-  console.log('Step 1: Loading wallet...');
+  const content = process.argv[2];
+
+  if (!content || content === 'help') {
+    console.log(`
+Post Commands:
+
+  node scripts/superhero-post.mjs "<content>" [link1] [link2] ...
+
+    content    Post text (required)
+    link1...   Optional media URLs to attach
+
+Examples:
+  node scripts/superhero-post.mjs "Hello from Æ"
+  node scripts/superhero-post.mjs "Check this out" "https://example.com"
+  node scripts/superhero-post.mjs "Multiple links" "https://a.com" "https://b.com"
+
+Note: Each post costs a small amount of AE for gas (~0.00001 AE).
+`);
+    process.exit(0);
+  }
+
+  const links = process.argv.slice(3);
+
   const walletData = JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-  const secretKey = walletData.secretKey;
-  if (!secretKey) throw new Error('No secretKey in wallet');
+  const account = new MemoryAccount(walletData.secretKey);
 
-  const account = new MemoryAccount(secretKey);
-  console.log('Wallet address:', walletData.address);
-
-  console.log('Step 2: Initializing AeSdk...');
   const node = new Node(NODE_URL);
   const aeSdk = new AeSdk({
     nodes: [{ name: 'mainnet', instance: node }],
     accounts: [account],
   });
-  console.log('AeSdk address:', aeSdk.address);
 
-  console.log('Step 3: Loading contract ACI...');
   const aci = JSON.parse(fs.readFileSync('./contracts/Tipping_v3.aci.json', 'utf8'));
-  console.log('ACI loaded');
+  const contract = await aeSdk.initializeContract({ aci, address: CONTRACT_ADDRESS });
 
-  console.log('Step 4: Init contract instance...');
-  const contract = await Contract.initialize({
-    ...aeSdk.getContext(),
-    aci,
-    address: CONTRACT_ADDRESS,
-  });
-  console.log('Contract initialized');
-
-  console.log('Step 5: Calling post_without_tip...');
-  // title = post content text, media = list of URLs
-  const content = process.argv[2] || 'Hello from Æ';
-  const links = process.argv.slice(3);
-  
-  console.log('Content:', content);
-  console.log('Links:', links);
-  
+  console.error(`Posting "${content.slice(0, 60)}${content.length > 60 ? '...' : ''}" with ${links.length} link(s)...`);
   const result = await contract.post_without_tip(content, links, { onAccount: account });
-  console.log('Result:', result);
-  console.log('Tx hash:', result.hash);
 
-  console.log('SUCCESS! Post published to superhero.com');
+  console.log(JSON.stringify({
+    success: true,
+    post_id: result.decodedResult?.toString() || null,
+    content,
+    links,
+    tx_hash: result.hash,
+  }));
 }
 
 main().catch(e => { console.error('ERROR:', e.message || e); process.exit(1); });
