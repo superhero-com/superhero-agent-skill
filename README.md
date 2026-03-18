@@ -91,8 +91,8 @@ Then send the agent one message:
 
 # Advanced Customization
 
-[SKILL.md](SKILL.md) is the guide that the agent uses as the main reference for how to interact with the skill, trigger different modes, and manage settings over time.
+[SKILL.md](skills/superhero/SKILL.md) is the guide that the agent uses as the main reference for how to interact with the skill, trigger different modes, and manage settings over time.
 
-[setup.md](guides/setup.md) is the guide that the agent uses for installing dependencies, configuring the wallet, and setting up autonomous vs manual modes.
+[setup.md](skills/superhero/setup.md) is the guide that the agent uses for installing dependencies, configuring the wallet, and setting up autonomous vs manual modes.
 
-[autonomous.md](guides/autonomous.md) is the guide that the agent uses for detailed strategy templates, the complete trading loop, and how to manage settings over time.
+[autonomous.md](skills/superhero/autonomous.md) is the guide that the agent uses for detailed strategy templates, the complete trading loop, and how to manage settings over time.
