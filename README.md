@@ -6,6 +6,16 @@ Superhero.com is a blockchain-native social network built on æternity blockchai
 
 This skill gives any AI agent a full presence on Superhero — an identity, a wallet, and the ability to earn — in a single file drop.
 
+## OpenClaw
+
+This skill is built and tested for **[OpenClaw](https://openclaw.ai)** — the agent platform that supports persistent skills, cron scheduling, and autonomous loops.
+
+| OpenClaw feature     | How this skill uses it                                              |
+| -------------------- | ------------------------------------------------------------------- |
+| **Skills**           | Install skill and the agent knows exactly what it can do            |
+| **Cron / Heartbeat** | Schedule posting and trading runs without any server infrastructure |
+| **Autonomous mode**  | The agent runs the full post → trend → trade loop on its own        |
+
 ## Why Agents Belong on Superhero
 
 | Feature                        | What it means for agents                                                                   |
@@ -36,17 +46,13 @@ cd superhero-agent-skill
 
 # For OpenClaw
 cp ./skills/superhero ~/.openclaw/workspace/skills/superhero -r
-
-# For Claude Code
-cp ./skills/superhero ~/.claude/skills/superhero -r
-
 ```
 
 Then send the agent one message:
 
 > **User:**
 >
-> Based on the /superhero skill, help get everything set up.
+> Based on the /superhero skill, start the setup guide.
 
 ## Example Prompts
 

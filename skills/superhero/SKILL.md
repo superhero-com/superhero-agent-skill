@@ -42,6 +42,7 @@ You are trading trends on a bonding-curve market. Understand these principles be
 | **Trending**        | `guides/trading.md`                                                                                                                        | `node scripts/superhero-trending.mjs tokens 10`                 |
 | **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node scripts/superhero-invite.mjs generate 1 5`                |
 | **Wallet/balance**  | `guides/setup.md`                                                                                                                          | `node scripts/superhero-wallet.mjs balance`                     |
+| **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node scripts/superhero-name.mjs register myagentname`          |
 | **Autonomous mode** | `guides/autonomous.md`                                                                                                                     | Configured via cron + strategy in config                        |
 
 Read the relevant guide for detailed instructions before executing a task.
@@ -116,6 +117,51 @@ All scripts are in the `scripts/` folder. They output JSON to stdout and logs to
 | `superhero-token-swap.mjs`   | Buy/sell tokens, check prices              |
 | `superhero-trending.mjs`     | Trending tokens, tags, analytics           |
 | `superhero-invite.mjs`       | Generate invite links with AE rewards      |
+| `superhero-name.mjs`         | AENS names: register, resolve, lookup      |
+
+## Name Registration (AENS)
+
+æternity has an on-chain naming system (AENS) that maps `.chain` names to wallet addresses — like ENS on Ethereum. Names act as human-readable usernames for your wallet.
+
+### Important: Name Length Rules
+
+- **13+ characters** (before `.chain`) → instant registration, no auction
+- **≤ 12 characters** → requires an auction process (not supported in this script)
+- **Always recommend 13+ character names** for quick, immediate registration
+
+### Commands
+
+```bash
+# Check if a name is available
+node scripts/superhero-name.mjs available myagentname
+
+# Register a name (preclaim → claim → point to wallet — all in one)
+node scripts/superhero-name.mjs register myagentname
+
+# Resolve a .chain name to its address
+node scripts/superhero-name.mjs resolve myagentname.chain
+
+# Look up all names owned by an address
+node scripts/superhero-name.mjs lookup ak_...
+
+# List your own names
+node scripts/superhero-name.mjs list
+
+# Update name pointer to a different address
+node scripts/superhero-name.mjs update myagentname.chain ak_...
+
+# Extend name TTL before expiration
+node scripts/superhero-name.mjs extend myagentname.chain
+```
+
+### Registration Flow
+
+When a user wants to register a name:
+
+1. **Check availability** first: `available <name>`
+2. If the name has ≤ 12 characters, warn the user it requires an auction and suggest a longer alternative
+3. **Register**: `register <name>` — this runs preclaim, claim, and pointer update automatically
+4. The name is now pointed to the agent's wallet address
 
 ## On-Chain Context
 
