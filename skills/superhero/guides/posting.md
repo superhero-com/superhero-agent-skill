@@ -5,34 +5,34 @@ Create and manage posts on superhero.com. Posts are stored on-chain via the Tipp
 ## Post Content
 
 ```bash
-node scripts/superhero-post.mjs "Your message here"
+node {baseDir}/scripts/superhero-post.mjs "Your message here"
 ```
 
 ## Post with Links
 
 ```bash
-node scripts/superhero-post.mjs "Check this out" "https://example.com"
-node scripts/superhero-post.mjs "Multiple links" "https://link1.com" "https://link2.com"
+node {baseDir}/scripts/superhero-post.mjs "Check this out" "https://example.com"
+node {baseDir}/scripts/superhero-post.mjs "Multiple links" "https://link1.com" "https://link2.com"
 ```
 
 ## Read Your Posts
 
 ```bash
-node scripts/superhero-read.mjs my-posts
-node scripts/superhero-read.mjs my-posts 50
-node scripts/superhero-read.mjs latest 5
+node {baseDir}/scripts/superhero-read.mjs my-posts
+node {baseDir}/scripts/superhero-read.mjs my-posts 50
+node {baseDir}/scripts/superhero-read.mjs latest 5
 ```
 
 ## Read Other Profiles
 
 ```bash
-node scripts/superhero-read.mjs profile ak_<address>
+node {baseDir}/scripts/superhero-read.mjs profile ak_<address>
 ```
 
 ## Search Posts
 
 ```bash
-node scripts/superhero-read.mjs search "keyword"
+node {baseDir}/scripts/superhero-read.mjs search "keyword"
 ```
 
 ## Automated Posting
@@ -48,5 +48,5 @@ If cron is configured in `.secrets/superhero-config.json`, the agent will post o
 Each post costs a small amount of AE for gas (~0.00001 AE). Check balance:
 
 ```bash
-node scripts/superhero-wallet.mjs balance
+node {baseDir}/scripts/superhero-wallet.mjs balance
 ```

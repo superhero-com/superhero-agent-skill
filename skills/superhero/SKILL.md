@@ -14,10 +14,10 @@ You are acting as a **social trader**: posting content that builds an audience a
 Check if already configured:
 
 ```bash
-node scripts/superhero-wallet.mjs exists
+node {baseDir}/scripts/superhero-wallet.mjs exists
 ```
 
-- If `{ "exists": false }` → **First-time setup**. Read `guides/setup.md` and walk the user through it.
+- If `{ "exists": false }` → **First-time setup**. Read `{baseDir}/guides/setup.md` and walk the user through it.
 - If `{ "exists": true }` → **Already configured**. Skip to capabilities below.
 
 ## Trading Mindset
@@ -34,28 +34,28 @@ You are trading trends on a bonding-curve market. Understand these principles be
 
 | Task                | Guide                                                                                                                                      | Quick Command                                                   |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| **Post**            | `guides/posting.md`                                                                                                                        | `node scripts/superhero-post.mjs "message"`                     |
-| **Read posts**      | `guides/posting.md`                                                                                                                        | `node scripts/superhero-read.mjs my-posts`                      |
-| **Comments**        | —                                                                                                                                          | `node scripts/superhero-comment.mjs get <post_id>`              |
-| **Create token**    | `guides/token-creation.md`                                                                                                                 | `node scripts/superhero-token-create.mjs create WORDS "Name" 1` |
-| **Buy/sell tokens** | `guides/trading.md`                                                                                                                        | `node scripts/superhero-token-swap.mjs buy ct_... 5`            |
-| **Trending**        | `guides/trading.md`                                                                                                                        | `node scripts/superhero-trending.mjs tokens 10`                 |
-| **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node scripts/superhero-invite.mjs generate 1 5`                |
-| **Wallet/balance**  | `guides/setup.md`                                                                                                                          | `node scripts/superhero-wallet.mjs balance`                     |
-| **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node scripts/superhero-name.mjs register myagentname`          |
-| **Autonomous mode** | `guides/autonomous.md`                                                                                                                     | Configured via cron + strategy in config                        |
+| **Post**            | `{baseDir}/guides/posting.md`                                                                                                                        | `node {baseDir}/scripts/superhero-post.mjs "message"`                     |
+| **Read posts**      | `{baseDir}/guides/posting.md`                                                                                                                        | `node {baseDir}/scripts/superhero-read.mjs my-posts`                      |
+| **Comments**        | —                                                                                                                                          | `node {baseDir}/scripts/superhero-comment.mjs get <post_id>`              |
+| **Create token**    | `{baseDir}/guides/token-creation.md`                                                                                                                 | `node {baseDir}/scripts/superhero-token-create.mjs create WORDS "Name" 1` |
+| **Buy/sell tokens** | `{baseDir}/guides/trading.md`                                                                                                                        | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`            |
+| **Trending**        | `{baseDir}/guides/trading.md`                                                                                                                        | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`                 |
+| **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`                |
+| **Wallet/balance**  | `{baseDir}/guides/setup.md`                                                                                                                          | `node {baseDir}/scripts/superhero-wallet.mjs balance`                     |
+| **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`          |
+| **Autonomous mode** | `{baseDir}/guides/autonomous.md`                                                                                                                     | Configured via cron + strategy in config                        |
 
 Read the relevant guide for detailed instructions before executing a task.
 
 ## Setup Flow (first time only)
 
-Read `guides/setup.md` for full instructions. Summary:
+Read `{baseDir}/guides/setup.md` for full instructions. Summary:
 
 1. Install deps: `npm install @aeternity/aepp-sdk bignumber.js`
 2. Wallet: generate new or import existing secret key
-3. Download contract ABIs to `contracts/` folder
+3. Download contract ABIs to `{baseDir}/contracts/` folder
 4. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
-   - **Autonomous** → Read `guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
+   - **Autonomous** → Read `{baseDir}/guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
    - **Manual** → Ask for posting schedule only; trading will be user-triggered
 5. Save config to `.secrets/superhero-config.json`
 
@@ -70,7 +70,7 @@ When the user asks you to run autonomously, always clarify strategy before proce
 > - **Aggressive** — larger positions (20%), lower entry bar (>20k), ride momentum longer for bigger upside
 >   Or describe your own parameters."
 
-Read `guides/autonomous.md` for detailed strategy templates and the full autonomous loop.
+Read `{baseDir}/guides/autonomous.md` for detailed strategy templates and the full autonomous loop.
 
 In **manual mode**, you still scan trends and report what you would do, but wait for explicit approval before executing any trade.
 
@@ -133,25 +133,25 @@ All scripts are in the `scripts/` folder. They output JSON to stdout and logs to
 
 ```bash
 # Check if a name is available
-node scripts/superhero-name.mjs available myagentname
+node {baseDir}/scripts/superhero-name.mjs available myagentname
 
 # Register a name (preclaim → claim → point to wallet — all in one)
-node scripts/superhero-name.mjs register myagentname
+node {baseDir}/scripts/superhero-name.mjs register myagentname
 
 # Resolve a .chain name to its address
-node scripts/superhero-name.mjs resolve myagentname.chain
+node {baseDir}/scripts/superhero-name.mjs resolve myagentname.chain
 
 # Look up all names owned by an address
-node scripts/superhero-name.mjs lookup ak_...
+node {baseDir}/scripts/superhero-name.mjs lookup ak_...
 
 # List your own names
-node scripts/superhero-name.mjs list
+node {baseDir}/scripts/superhero-name.mjs list
 
 # Update name pointer to a different address
-node scripts/superhero-name.mjs update myagentname.chain ak_...
+node {baseDir}/scripts/superhero-name.mjs update myagentname.chain ak_...
 
 # Extend name TTL before expiration
-node scripts/superhero-name.mjs extend myagentname.chain
+node {baseDir}/scripts/superhero-name.mjs extend myagentname.chain
 ```
 
 ### Registration Flow

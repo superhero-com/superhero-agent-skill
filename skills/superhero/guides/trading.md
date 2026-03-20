@@ -5,7 +5,7 @@ Buy, sell, and monitor tokens on superhero.com's bonding curve marketplace.
 ## Check Trending Tokens
 
 ```bash
-node scripts/superhero-trending.mjs tokens 10
+node {baseDir}/scripts/superhero-trending.mjs tokens 10
 ```
 
 Returns tokens sorted by trending score with: name, sale_address, price, market_cap, holders.
@@ -13,15 +13,15 @@ Returns tokens sorted by trending score with: name, sale_address, price, market_
 ## Look Up a Token
 
 ```bash
-node scripts/superhero-token-swap.mjs lookup "TokenName"
-node scripts/superhero-trending.mjs token-info ct_<sale_address>
-node scripts/superhero-trending.mjs performance ct_<sale_address>
+node {baseDir}/scripts/superhero-token-swap.mjs lookup "TokenName"
+node {baseDir}/scripts/superhero-trending.mjs token-info ct_<sale_address>
+node {baseDir}/scripts/superhero-trending.mjs performance ct_<sale_address>
 ```
 
 ## Check Price Before Trading
 
 ```bash
-node scripts/superhero-token-swap.mjs price ct_<sale_address> 10
+node {baseDir}/scripts/superhero-token-swap.mjs price ct_<sale_address> 10
 ```
 
 Returns the AE cost for buying the specified amount.
@@ -29,7 +29,7 @@ Returns the AE cost for buying the specified amount.
 ## Buy Tokens
 
 ```bash
-node scripts/superhero-token-swap.mjs buy ct_<sale_address> 5
+node {baseDir}/scripts/superhero-token-swap.mjs buy ct_<sale_address> 5
 ```
 
 - Automatically applies 3% slippage protection
@@ -38,7 +38,7 @@ node scripts/superhero-token-swap.mjs buy ct_<sale_address> 5
 ## Sell Tokens
 
 ```bash
-node scripts/superhero-token-swap.mjs sell ct_<sale_address> 5
+node {baseDir}/scripts/superhero-token-swap.mjs sell ct_<sale_address> 5
 ```
 
 - Automatically handles token allowance
@@ -48,7 +48,7 @@ node scripts/superhero-token-swap.mjs sell ct_<sale_address> 5
 
 When the user has trading enabled in config, follow this loop:
 
-1. **Check trending** — `node scripts/superhero-trending.mjs tokens 20`
+1. **Check trending** — `node {baseDir}/scripts/superhero-trending.mjs tokens 20`
 2. **Filter** — Only consider tokens with `trending_score` above the configured minimum
 3. **Check price** — Get current price before buying
 4. **Position sizing** — Never spend more than `max_trade_percent_of_balance` of wallet balance on a single trade

@@ -5,7 +5,7 @@ Create new bonding-curve tokens on superhero.com via the CommunityFactory contra
 ## Check if Token Name is Available
 
 ```bash
-node scripts/superhero-token-create.mjs check WORDS "MyTokenName"
+node {baseDir}/scripts/superhero-token-create.mjs check WORDS "MyTokenName"
 ```
 
 Returns `{ exists: true/false }`.
@@ -13,7 +13,7 @@ Returns `{ exists: true/false }`.
 ## Create a Token
 
 ```bash
-node scripts/superhero-token-create.mjs create WORDS "MyTokenName" 1
+node {baseDir}/scripts/superhero-token-create.mjs create WORDS "MyTokenName" 1
 ```
 
 Parameters:
@@ -27,13 +27,13 @@ Returns: `sale_address`, `dao_address`, and `tx_hash`.
 ## Get Token Info After Creation
 
 ```bash
-node scripts/superhero-token-create.mjs info ct_<sale_address>
+node {baseDir}/scripts/superhero-token-create.mjs info ct_<sale_address>
 ```
 
 Or via the trending script:
 
 ```bash
-node scripts/superhero-trending.mjs token-info ct_<sale_address>
+node {baseDir}/scripts/superhero-trending.mjs token-info ct_<sale_address>
 ```
 
 ## Cost
@@ -47,9 +47,9 @@ Token creation requires:
 
 When enabled in config, the agent can:
 
-1. Fetch trending tags: `node scripts/superhero-trending.mjs tags 5`
-2. For each trending tag, check if a token exists: `node scripts/superhero-token-create.mjs check WORDS "<tag>"`
-3. If it doesn't exist, create it: `node scripts/superhero-token-create.mjs create WORDS "<tag>" 1`
+1. Fetch trending tags: `node {baseDir}/scripts/superhero-trending.mjs tags 5`
+2. For each trending tag, check if a token exists: `node {baseDir}/scripts/superhero-token-create.mjs check WORDS "<tag>"`
+3. If it doesn't exist, create it: `node {baseDir}/scripts/superhero-token-create.mjs create WORDS "<tag>" 1`
 4. This front-runs trending topics by creating tokens for popular hashtags
 
 ## Contract Details

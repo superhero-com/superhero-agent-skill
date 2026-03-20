@@ -15,7 +15,7 @@ Ask the user: **"Do you have an existing æternity wallet, or should I generate 
 ### Option A: Generate new wallet
 
 ```bash
-node scripts/superhero-wallet.mjs generate
+node {baseDir}/scripts/superhero-wallet.mjs generate
 ```
 
 This creates `.secrets/aesh-wallet.json`. Tell the user their new address and that they need AE tokens for gas fees.
@@ -23,13 +23,13 @@ This creates `.secrets/aesh-wallet.json`. Tell the user their new address and th
 ### Option B: Import existing wallet
 
 ```bash
-node scripts/superhero-wallet.mjs import "<secret_key>"
+node {baseDir}/scripts/superhero-wallet.mjs import "<secret_key>"
 ```
 
 ### Verify wallet
 
 ```bash
-node scripts/superhero-wallet.mjs balance
+node {baseDir}/scripts/superhero-wallet.mjs balance
 ```
 
 If balance is 0, tell the user: "You need AE tokens to post or trade. Fund your wallet address with AE from an exchange or another wallet."
@@ -43,12 +43,12 @@ After the wallet is funded, ask:
 If the user wants one:
 
 1. Help them pick a name — **must be 13+ characters** (before `.chain`) to skip the auction process. Names with 12 or fewer characters require an auction and take longer.
-2. Check availability: `node scripts/superhero-name.mjs available <name>`
-3. Register: `node scripts/superhero-name.mjs register <name>`
+2. Check availability: `node {baseDir}/scripts/superhero-name.mjs available <name>`
+3. Register: `node {baseDir}/scripts/superhero-name.mjs register <name>`
 
 This runs preclaim → claim → pointer update automatically. The name will point to the agent's wallet address.
 
-If the user declines, skip this step — it can always be done later with `node scripts/superhero-name.mjs register <name>`.
+If the user declines, skip this step — it can always be done later with `node {baseDir}/scripts/superhero-name.mjs register <name>`.
 
 ## 3. Automation Setup
 
@@ -58,7 +58,7 @@ First, ask the user the most important question:
 
 ### Autonomous Mode
 
-If the user chooses autonomous, read `guides/autonomous.md` for full strategy details, then ask:
+If the user chooses autonomous, read `{baseDir}/guides/autonomous.md` for full strategy details, then ask:
 
 > **"Which risk strategy do you want?**
 >
@@ -115,9 +115,9 @@ Store the chosen settings in `.secrets/superhero-config.json`. Example for Moder
 ## 4. Verify Setup
 
 ```bash
-node scripts/superhero-wallet.mjs balance
-node scripts/superhero-read.mjs latest 3
-node scripts/superhero-trending.mjs tokens 5
+node {baseDir}/scripts/superhero-wallet.mjs balance
+node {baseDir}/scripts/superhero-read.mjs latest 3
+node {baseDir}/scripts/superhero-trending.mjs tokens 5
 ```
 
 If all commands work, setup is complete. Tell the user: "Superhero skill is ready! You can now post, read, trade tokens, and check trending content."
