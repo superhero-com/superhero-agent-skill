@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Wallet management for superhero.com / æternity blockchain
 // Generate new wallet, check balance, export address
-import { AeSdk, Node, MemoryAccount, generateKeyPair } from '@aeternity/aepp-sdk';
+import { AeSdk, Node, MemoryAccount, Encoding, encode } from '@aeternity/aepp-sdk';
+import { randomBytes } from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
@@ -26,15 +27,16 @@ function generateWallet() {
     console.error('Delete it first if you want to regenerate.');
     process.exit(1);
   }
-  const keypair = generateKeyPair();
+  const secretKey = encode(randomBytes(32), Encoding.AccountSecretKey);
+  const account = new MemoryAccount(secretKey);
   const walletData = {
-    address: keypair.publicKey,
-    secretKey: keypair.secretKey,
+    address: account.address,
+    secretKey: secretKey,
   };
   const dir = path.dirname(WALLET_PATH);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(WALLET_PATH, JSON.stringify(walletData, null, 2));
-  console.log(JSON.stringify({ success: true, address: keypair.publicKey }));
+  console.log(JSON.stringify({ success: true, address: account.address }));
 }
 
 async function getBalance() {
