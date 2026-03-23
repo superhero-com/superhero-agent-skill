@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Create a token on superhero.com via the CommunityFactory contract
 // This creates a new bonding-curve token (BCTSL token)
-import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
+import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 
@@ -60,9 +60,11 @@ Note: Requires AE in wallet for gas + initial buy cost.
     fs.readFileSync('./contracts/BondingCurve.aci.json', 'utf8')
   );
 
-  const factory = await aeSdk.initializeContract({
+  const factory = await Contract.initialize({
     address: FACTORY_ADDRESS,
     aci: COMMUNITY_FACTORY_ACI,
+    onAccount: aeSdk,
+    onNode: aeSdk.api,
   });
 
   switch (command) {
@@ -91,9 +93,11 @@ Note: Requires AE in wallet for gas + initial buy cost.
 
       // Get bonding curve and calculate initial buy price
       const bondingCurveAddress = await factory.bonding_curve().then(res => res.decodedResult);
-      const bondingCurve = await aeSdk.initializeContract({
+      const bondingCurve = await Contract.initialize({
         address: bondingCurveAddress,
         aci: BONDING_CURVE_ACI,
+        onAccount: aeSdk,
+        onNode: aeSdk.api,
       });
 
       const decimals = await bondingCurve.supported_decimals().then(res => res.decodedResult);

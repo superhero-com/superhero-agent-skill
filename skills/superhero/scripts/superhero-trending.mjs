@@ -10,11 +10,12 @@ async function main() {
     case 'tokens': {
       const limit = parseInt(process.argv[3]) || 20;
       const orderBy = process.argv[4] || 'trending_score';
-      const url = `${API_BASE}/api/tokens?limit=${limit}&order_by=${encodeURIComponent(orderBy)}&order_direction=DESC`;
+      const page = parseInt(process.argv[5]) || 1;
+      const url = `${API_BASE}/api/tokens?order_by=${encodeURIComponent(orderBy)}&order_direction=DESC&limit=${limit}&page=${page}`;
       const res = await fetch(url);
       if (!res.ok) { console.error(`API error: ${res.status}`); process.exit(1); }
       const data = await res.json();
-      const tokens = (data.data || []).map(t => ({
+      const tokens = (data.items || data.data || []).map(t => ({
         name: t.name,
         symbol: t.symbol,
         sale_address: t.sale_address,

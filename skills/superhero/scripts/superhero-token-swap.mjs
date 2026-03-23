@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Buy and sell tokens on superhero.com via bonding curve contracts
-import { AeSdk, Node, MemoryAccount, formatAmount, AE_AMOUNT_FORMATS } from '@aeternity/aepp-sdk';
+import { AeSdk, Node, MemoryAccount, formatAmount, AE_AMOUNT_FORMATS, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 
@@ -18,14 +18,14 @@ async function initSaleContract(aeSdk, saleAddress) {
   const ACI = JSON.parse(
     fs.readFileSync('./contracts/AffiliationBondingCurveTokenSale.aci.json', 'utf8')
   );
-  return await aeSdk.initializeContract({ aci: ACI, address: saleAddress });
+  return await Contract.initialize({ aci: ACI, address: saleAddress, onAccount: aeSdk, onNode: aeSdk.api });
 }
 
 async function initTokenContract(aeSdk, tokenAddress) {
   const ACI = JSON.parse(
     fs.readFileSync('./contracts/FungibleTokenFull.aci.json', 'utf8')
   );
-  return await aeSdk.initializeContract({ aci: ACI, address: tokenAddress });
+  return await Contract.initialize({ aci: ACI, address: tokenAddress, onAccount: aeSdk, onNode: aeSdk.api });
 }
 
 async function getTokenDecimals(saleContract, aeSdk) {
@@ -101,7 +101,7 @@ Note: Slippage is set to ${SLIPPAGE_PERCENT}%. Buy/sell require AE for gas.
       const listRes = await fetch(`https://api.superhero.com/api/tokens?limit=100`);
       if (listRes.ok) {
         const listData = await listRes.json();
-        const matches = (listData.data || []).filter(t =>
+        const matches = (listData.items || listData.data || []).filter(t =>
           t.name?.toLowerCase().includes(query.toLowerCase()) ||
           t.symbol?.toLowerCase().includes(query.toLowerCase())
         );

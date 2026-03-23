@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Generate invite links with AE rewards on superhero.com
 // Uses AffiliationTreasury contract via CommunityFactory
-import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
+import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 
@@ -15,14 +15,18 @@ async function getTreasury(aeSdk) {
   const factoryAci = JSON.parse(
     fs.readFileSync('./contracts/CommunityFactory.aci.json', 'utf8')
   );
-  const factory = await aeSdk.initializeContract({
+  const factory = await Contract.initialize({
     aci: factoryAci,
     address: FACTORY_ADDRESS,
+    onAccount: aeSdk,
+    onNode: aeSdk.api,
   });
   const treasuryAddress = await factory.affiliation_treasury().then(r => r.decodedResult);
-  return await aeSdk.initializeContract({
+  return await Contract.initialize({
     aci: factoryAci,
     address: treasuryAddress,
+    onAccount: aeSdk,
+    onNode: aeSdk.api,
   });
 }
 

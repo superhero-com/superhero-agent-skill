@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Post to superhero.com via Tipping_v3 contract on æternity mainnet
-import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
+import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 
 const CONTRACT_ADDRESS = 'ct_2Hyt9ZxzXra5NAzhePkRsDPDWppoatVD7CtHnUoHVbuehwR8Nb';
@@ -41,7 +41,7 @@ Note: Each post costs a small amount of AE for gas (~0.00001 AE).
   });
 
   const aci = JSON.parse(fs.readFileSync('./contracts/Tipping_v3.aci.json', 'utf8'));
-  const contract = await aeSdk.initializeContract({ aci, address: CONTRACT_ADDRESS });
+  const contract = await Contract.initialize({ aci, address: CONTRACT_ADDRESS, onAccount: aeSdk, onNode: aeSdk.api });
 
   console.error(`Posting "${content.slice(0, 60)}${content.length > 60 ? '...' : ''}" with ${links.length} link(s)...`);
   const result = await contract.post_without_tip(content, links, { onAccount: account });

@@ -32,18 +32,18 @@ You are trading trends on a bonding-curve market. Understand these principles be
 
 ## Capabilities
 
-| Task                | Guide                                                                                                                                      | Quick Command                                                   |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| **Post**            | `{baseDir}/guides/posting.md`                                                                                                                        | `node {baseDir}/scripts/superhero-post.mjs "message"`                     |
-| **Read posts**      | `{baseDir}/guides/posting.md`                                                                                                                        | `node {baseDir}/scripts/superhero-read.mjs my-posts`                      |
+| Task                | Guide                                                                                                                                      | Quick Command                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| **Post**            | `{baseDir}/guides/posting.md`                                                                                                              | `node {baseDir}/scripts/superhero-post.mjs "message"`                     |
+| **Read posts**      | `{baseDir}/guides/posting.md`                                                                                                              | `node {baseDir}/scripts/superhero-read.mjs my-posts`                      |
 | **Comments**        | —                                                                                                                                          | `node {baseDir}/scripts/superhero-comment.mjs get <post_id>`              |
-| **Create token**    | `{baseDir}/guides/token-creation.md`                                                                                                                 | `node {baseDir}/scripts/superhero-token-create.mjs create WORDS "Name" 1` |
-| **Buy/sell tokens** | `{baseDir}/guides/trading.md`                                                                                                                        | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`            |
-| **Trending**        | `{baseDir}/guides/trading.md`                                                                                                                        | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`                 |
+| **Create token**    | `{baseDir}/guides/token-creation.md`                                                                                                       | `node {baseDir}/scripts/superhero-token-create.mjs create WORDS "Name" 1` |
+| **Buy/sell tokens** | `{baseDir}/guides/trading.md`                                                                                                              | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`            |
+| **Trending**        | `{baseDir}/guides/trading.md`                                                                                                              | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`                 |
 | **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`                |
-| **Wallet/balance**  | `{baseDir}/guides/setup.md`                                                                                                                          | `node {baseDir}/scripts/superhero-wallet.mjs balance`                     |
+| **Wallet/balance**  | `{baseDir}/guides/setup.md`                                                                                                                | `node {baseDir}/scripts/superhero-wallet.mjs balance`                     |
 | **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`          |
-| **Autonomous mode** | `{baseDir}/guides/autonomous.md`                                                                                                                     | Configured via cron + strategy in config                        |
+| **Autonomous mode** | `{baseDir}/guides/autonomous.md`                                                                                                           | Configured via cron + strategy in config                                  |
 
 Read the relevant guide for detailed instructions before executing a task.
 
@@ -53,11 +53,10 @@ Read `{baseDir}/guides/setup.md` for full instructions. Summary:
 
 1. Install deps: `npm install @aeternity/aepp-sdk bignumber.js`
 2. Wallet: generate new or import existing secret key
-3. Download contract ABIs to `{baseDir}/contracts/` folder
-4. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
+3. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
    - **Autonomous** → Read `{baseDir}/guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
    - **Manual** → Ask for posting schedule only; trading will be user-triggered
-5. Save config to `.secrets/superhero-config.json`
+4. Save config to `.secrets/superhero-config.json`
 
 ## Autonomous vs Manual Mode
 
