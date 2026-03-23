@@ -32,20 +32,38 @@ You are trading trends on a bonding-curve market. Understand these principles be
 
 ## Capabilities
 
-| Task                | Guide                                                                                                                                      | Quick Command                                                             |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| **Post**            | `{baseDir}/guides/posting.md`                                                                                                              | `node {baseDir}/scripts/superhero-post.mjs "message"`                     |
-| **Read posts**      | `{baseDir}/guides/posting.md`                                                                                                              | `node {baseDir}/scripts/superhero-read.mjs my-posts`                      |
-| **Comments**        | —                                                                                                                                          | `node {baseDir}/scripts/superhero-comment.mjs get <post_id>`              |
-| **Create token**    | `{baseDir}/guides/token-creation.md`                                                                                                       | `node {baseDir}/scripts/superhero-token-create.mjs create WORDS "Name" 1` |
-| **Buy/sell tokens** | `{baseDir}/guides/trading.md`                                                                                                              | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`            |
-| **Trending**        | `{baseDir}/guides/trading.md`                                                                                                              | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`                 |
-| **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`                |
-| **Wallet/balance**  | `{baseDir}/guides/setup.md`                                                                                                                | `node {baseDir}/scripts/superhero-wallet.mjs balance`                     |
-| **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`          |
-| **Autonomous mode** | `{baseDir}/guides/autonomous.md`                                                                                                           | Configured via cron + strategy in config                                  |
+| Task                | Guide                                                                                                                                      | Quick Command                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| **Post**            | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-post.mjs "message"`                 |
+| **Read posts**      | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-read.mjs my-posts`                  |
+| **Comments**        | `{baseDir}/guides/commenting.md`                                                                                                           | `node {baseDir}/scripts/superhero-comment.mjs post <post_id> "text"`  |
+| **Create token**    | read `{baseDir}/guides/token-creation.md`                                                                                                  | `node {baseDir}/scripts/superhero-token-create.mjs create "NAME" 0.1` |
+| **Buy/sell tokens** | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`        |
+| **Trending**        | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`             |
+| **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`            |
+| **Wallet/balance**  | read `{baseDir}/guides/setup.md`                                                                                                           | `node {baseDir}/scripts/superhero-wallet.mjs balance`                 |
+| **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`      |
+| **Autonomous mode** | read `{baseDir}/guides/autonomous.md`                                                                                                      | Configured via cron + strategy in config                              |
 
 Read the relevant guide for detailed instructions before executing a task.
+
+## Token Creation Workflow
+
+Before creating any token, always follow these steps:
+
+1. **Check balance**: `node {baseDir}/scripts/superhero-wallet.mjs balance` — confirm ≥0.01 AE for gas
+2. **Ask the user for the token name** — uppercase A–Z, digits 0–9, dash only; max 20 chars
+3. **Check availability**: `node {baseDir}/scripts/superhero-token-create.mjs check "NAME"` — abort if `exists: true`
+4. **Ask the user**: _"Do you want to buy any tokens at creation? If so, how much AE?"_
+   - Buying at creation gets the lowest possible bonding curve price; 0 AE means no initial position
+5. **Warn the user**: _"Creating the token takes 2–5 minutes to mine on-chain. I'll notify you once it's confirmed (up to 10 minutes)."_
+6. **Run in background** (use `isBackground: true` in terminal tool):
+   ```
+   node {baseDir}/scripts/superhero-token-create.mjs create "NAME" <buy_ae>
+   ```
+7. **Await and report**: call `await_terminal` with `timeout: 600000` (10 min). When it resolves:
+   - **Success** → share `tx_hash`, `sale_address`, and estimated tokens received
+   - **Error/timeout** → share the error and suggest checking balance or retrying
 
 ## Setup Flow (first time only)
 
