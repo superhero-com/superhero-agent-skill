@@ -55,15 +55,6 @@ Token creation requires:
 - Gas fee (~0.001 AE)
 - Initial buy: whatever AE amount you specify (optional; 0 = no buy). The script sends `buy_ae * 1.05` as buffer for on-chain price drift.
 
-## Auto-Create Tokens (Trending Strategy)
-
-When enabled in config, the agent can:
-
-1. Fetch trending tags: `node {baseDir}/scripts/superhero-trending.mjs tags 5`
-2. For each trending tag, check if a token exists: `node {baseDir}/scripts/superhero-token-create.mjs check "<tag>"`
-3. If it doesn't exist, create it (background + await): `node {baseDir}/scripts/superhero-token-create.mjs create "<tag>" 0`
-4. This front-runs trending topics by creating tokens for popular hashtags
-
 ## Contract Details
 
 - **Factory**: `ct_25cqTw85wkF5cbcozmHHUCuybnfH9WaRZXSgEcNNXG9LsCJWTN`
