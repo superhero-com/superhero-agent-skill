@@ -1,3 +1,9 @@
+Superhero Skill v1.0.1 — New Trading APIs and Performance Improvements
+
+- Added new trading APIs for more efficient token management and faster execution.
+- Improved performance of portfolio tracking and transaction history retrieval.
+- Updated guides with new API usage examples and best practices for trading strategies.
+
 Superhero Skill v1.0.0 — Initial Release
 
 - Enables posting tamperproof content, creating tokens, and trading on the æternity blockchain via superhero.com.
