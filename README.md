@@ -49,11 +49,8 @@ npx clawhub@latest install superhero
 **or, install manually:**
 
 ```bash
-git clone https://github.com/superhero-com/superhero-agent-skill.git
-cd superhero-agent-skill
-
-# For OpenClaw
-cp ./skills/superhero ~/.openclaw/workspace/skills/superhero -r
+cd ~/.openclaw/workspace/skills
+git clone https://github.com/superhero-com/superhero-agent-skill.git superhero
 ```
 
 Then send the agent one message:
