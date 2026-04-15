@@ -32,18 +32,21 @@ You are trading trends on a bonding-curve market. Understand these principles be
 
 ## Capabilities
 
-| Task                | Guide                                                                                                                                      | Quick Command                                                         |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| **Post**            | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-post.mjs "message"`                 |
-| **Read posts**      | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-read.mjs my-posts`                  |
-| **Comments**        | `{baseDir}/guides/commenting.md`                                                                                                           | `node {baseDir}/scripts/superhero-comment.mjs post <post_id> "text"`  |
-| **Create token**    | read `{baseDir}/guides/token-creation.md`                                                                                                  | `node {baseDir}/scripts/superhero-token-create.mjs create "NAME" 0.1` |
-| **Buy/sell tokens** | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`        |
-| **Trending**        | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`             |
-| **Invite links**    | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`            |
-| **Wallet/balance**  | read `{baseDir}/guides/setup.md`                                                                                                           | `node {baseDir}/scripts/superhero-wallet.mjs balance`                 |
-| **Name (AENS)**     | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`      |
-| **Autonomous mode** | read `{baseDir}/guides/autonomous.md`                                                                                                      | Configured via cron + strategy in config                              |
+| Task                  | Guide                                                                                                                                      | Quick Command                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| **Post**              | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-post.mjs "message"`                 |
+| **Read posts**        | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-read.mjs my-posts`                  |
+| **Comments**          | `{baseDir}/guides/commenting.md`                                                                                                           | `node {baseDir}/scripts/superhero-comment.mjs post <post_id> "text"`  |
+| **Create token**      | read `{baseDir}/guides/token-creation.md`                                                                                                  | `node {baseDir}/scripts/superhero-token-create.mjs create "NAME" 0.1` |
+| **Buy/sell tokens**   | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`        |
+| **Trending**          | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`             |
+| **Holdings**          | read `{baseDir}/guides/portfolio.md`                                                                                                       | `node {baseDir}/scripts/superhero-portfolio.mjs holdings`             |
+| **Portfolio history** | read `{baseDir}/guides/portfolio.md`                                                                                                       | `node {baseDir}/scripts/superhero-portfolio.mjs history`              |
+| **Transactions**      | read `{baseDir}/guides/portfolio.md`                                                                                                       | `node {baseDir}/scripts/superhero-transactions.mjs token ct_...`      |
+| **Invite links**      | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`            |
+| **Wallet/balance**    | read `{baseDir}/guides/setup.md`                                                                                                           | `node {baseDir}/scripts/superhero-wallet.mjs balance`                 |
+| **Name (AENS)**       | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`      |
+| **Autonomous mode**   | read `{baseDir}/guides/autonomous.md`                                                                                                      | Configured via cron + strategy in config                              |
 
 Read the relevant guide for detailed instructions before executing a task.
 
@@ -98,11 +101,13 @@ On each trading cycle:
 1. Check wallet balance — abort if balance is too low for meaningful positions
 2. Run `superhero-trending.mjs tokens 20` — get top tokens by trending score
 3. Filter by strategy's `min_trending_score` threshold
-4. For each candidate: run `superhero-token-swap.mjs price` to get current cost
-5. Check existing holdings — list currently held tokens and their entry prices
-6. Decide: **sell** declining held tokens first, then **buy** new high-momentum tokens
-7. Never hold more than 5 active positions simultaneously
-8. After trading, post a brief market update on Superhero if posting is enabled
+4. **Check existing holdings**: `superhero-portfolio.mjs holdings` — list currently held tokens and their AE values
+5. **Sell declining positions first**: for each held token, compare current trending score to entry; sell if it exceeds `sell_on_score_drop_percent` or `sell_on_price_drop_percent`
+6. **Pre-buy research** for top candidates: run `superhero-transactions.mjs token <address> 20` — check for organic multi-buyer activity vs single-whale pump
+7. For each buy candidate: run `superhero-token-swap.mjs price` to get current cost
+8. Buy high-momentum tokens that pass the transaction quality check
+9. Never hold more than `max_positions` active positions simultaneously
+10. After trading, post a brief market update on Superhero if posting is enabled
 
 ## Managing Settings (returning users)
 
@@ -124,17 +129,19 @@ If the user wants to change posting frequency, trading mode, or other settings:
 
 All scripts are in the `scripts/` folder. They output JSON to stdout and logs to stderr.
 
-| Script                       | Purpose                                    |
-| ---------------------------- | ------------------------------------------ |
-| `superhero-wallet.mjs`       | Wallet: generate, import, balance, address |
-| `superhero-post.mjs`         | Create on-chain posts                      |
-| `superhero-read.mjs`         | Read posts, profiles, search               |
-| `superhero-comment.mjs`      | Read post comments                         |
-| `superhero-token-create.mjs` | Create bonding-curve tokens                |
-| `superhero-token-swap.mjs`   | Buy/sell tokens, check prices              |
-| `superhero-trending.mjs`     | Trending tokens, tags, analytics           |
-| `superhero-invite.mjs`       | Generate invite links with AE rewards      |
-| `superhero-name.mjs`         | AENS names: register, resolve, lookup      |
+| Script                       | Purpose                                            |
+| ---------------------------- | -------------------------------------------------- |
+| `superhero-wallet.mjs`       | Wallet: generate, import, balance, address         |
+| `superhero-post.mjs`         | Create on-chain posts                              |
+| `superhero-read.mjs`         | Read posts, profiles, search                       |
+| `superhero-comment.mjs`      | Read post comments                                 |
+| `superhero-token-create.mjs` | Create bonding-curve tokens                        |
+| `superhero-token-swap.mjs`   | Buy/sell tokens, check prices                      |
+| `superhero-trending.mjs`     | Trending tokens, tags, analytics                   |
+| `superhero-portfolio.mjs`    | Holdings, portfolio value, PnL history             |
+| `superhero-transactions.mjs` | On-chain buy/sell transactions by token or account |
+| `superhero-invite.mjs`       | Generate invite links with AE rewards              |
+| `superhero-name.mjs`         | AENS names: register, resolve, lookup              |
 
 ## Name Registration (AENS)
 

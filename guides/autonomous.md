@@ -10,9 +10,33 @@ On each cycle the agent:
 2. Scans trending tokens
 3. Reviews existing holdings and decides whether to sell any
 4. Buys new high-momentum tokens that meet the strategy's criteria
-5. Optionally posts a market update or scheduled content post
+5. Optionally posts a market update or scheduled content post. ASK the user if they want to post after each trading cycle, or only on a fixed schedule.
 
 The cycle frequency is set by the trading cron. Posting can run on a separate, independent cron.
+
+## Using This Data to Make Trading Decisions
+
+### Pre-buy checklist
+
+1. **Check trending score**: `node scripts/superhero-trending.mjs token-info ct_...`
+2. **Check transaction volume**: `node scripts/superhero-transactions.mjs token ct_... 30`
+   - Many small buyers = organic momentum
+   - One large buyer = potential pump, higher exit risk
+3. **Check price performance**: `node scripts/superhero-trending.mjs performance ct_...`
+
+### Deciding when to sell
+
+1. **Check your holdings**: `node scripts/superhero-portfolio.mjs holdings`
+2. For each held token, check current trending score vs. entry
+3. If score has dropped more than your strategy's `sell_on_score_drop_percent`, sell
+4. **Run your own transactions** to confirm entry price: `node scripts/superhero-transactions.mjs mine`
+
+### Selling back to AE
+
+Once you have the `sale_address` from your holdings:
+
+````bash
+node scripts/superhero-token-swap.mjs sell <sale_address> <amount>
 
 ---
 
@@ -39,7 +63,6 @@ Best for: users who want steady, low-risk participation. Protects capital, exits
     "mode": "auto_trending",
     "strategy": "conservative",
     "cron": "0 */6 * * *",
-    "min_trending_score": 100000,
     "max_trade_percent_of_balance": 0.05,
     "max_positions": 3,
     "sell_on_score_drop_percent": 10,
@@ -47,14 +70,12 @@ Best for: users who want steady, low-risk participation. Protects capital, exits
     "max_hold_cycles": 3
   }
 }
-```
+````
 
 **Rules the agent follows:**
 
-- Only buy tokens with trending score above **100,000**
 - Maximum **5%** of wallet balance per trade
 - Hold at most **3** active positions at once
-- Sell if trending score drops more than **10%** since entry
 - Sell if price drops more than **5%** from entry
 - Auto-sell after **3 trading cycles** if no meaningful gain
 
@@ -77,7 +98,6 @@ Best for: users who want consistent growth without extreme risk. The default rec
     "mode": "auto_trending",
     "strategy": "moderate",
     "cron": "0 */4 * * *",
-    "min_trending_score": 50000,
     "max_trade_percent_of_balance": 0.1,
     "max_positions": 5,
     "sell_on_score_drop_percent": 25,
@@ -89,10 +109,8 @@ Best for: users who want consistent growth without extreme risk. The default rec
 
 **Rules the agent follows:**
 
-- Buy tokens with trending score above **50,000**
 - Maximum **10%** of wallet balance per trade
 - Hold at most **5** active positions
-- Sell if trending score drops more than **25%** since entry
 - Sell if price drops more than **12%** from entry
 - Auto-sell after **6 trading cycles** if position is flat or negative
 
@@ -115,7 +133,6 @@ Best for: users who understand the risk and want to maximize upside from early m
     "mode": "auto_trending",
     "strategy": "aggressive",
     "cron": "0 */2 * * *",
-    "min_trending_score": 20000,
     "max_trade_percent_of_balance": 0.2,
     "max_positions": 7,
     "sell_on_score_drop_percent": 40,
@@ -127,10 +144,8 @@ Best for: users who understand the risk and want to maximize upside from early m
 
 **Rules the agent follows:**
 
-- Buy tokens with trending score as low as **20,000** (catching early-stage momentum)
 - Maximum **20%** of wallet balance per trade
 - Hold at most **7** active positions
-- Only sell if trending score drops more than **40%** — ride dips
 - Accept up to **20%** price drop before exiting (bonding curves recover)
 - Hold up to **12 trading cycles** — momentum runs can last hours or days
 
