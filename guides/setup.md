@@ -76,7 +76,7 @@ After the user picks a strategy, ask for the posting schedule:
 > - `0 */6 * * *` — Every 6 hours
 > - `0 9 * * 1-5` — Weekdays at 9am
 
-The trading cron is set by the chosen strategy template (see `guides/autonomous.md`), but offer to adjust it.
+The trading cron is set by the chosen strategy template (see `{baseDir}/guides/autonomous.md`), but offer to adjust it.
 
 ### Manual Mode
 
@@ -88,7 +88,7 @@ Provide cron examples if they want scheduled posting. Trading will always requir
 
 ### Config
 
-Store the chosen settings in `.secrets/superhero-config.json`. Example for Moderate autonomous mode:
+Store the chosen settings in `{baseDir}/.secrets/superhero-config.json`. Example for Moderate autonomous mode:
 
 ```json
 {
@@ -102,7 +102,6 @@ Store the chosen settings in `.secrets/superhero-config.json`. Example for Moder
     "mode": "auto_trending",
     "strategy": "moderate",
     "cron": "0 */4 * * *",
-    "min_trending_score": 50000,
     "max_trade_percent_of_balance": 0.1,
     "max_positions": 5,
     "sell_on_score_drop_percent": 25,
