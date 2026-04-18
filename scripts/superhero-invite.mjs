@@ -5,8 +5,16 @@ import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
+
+function loadAccount() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
+    process.exit(1);
+  }
+  return new MemoryAccount(privateKey);
+}
 const FACTORY_ADDRESS = 'ct_25cqTw85wkF5cbcozmHHUCuybnfH9WaRZXSgEcNNXG9LsCJWTN';
 const INVITE_BASE_URL = 'https://superhero.com#invite_code=';
 const REDEMPTION_FEE_COVER = 10n ** 15n; // 0.001 AE to cover gas for redemption
@@ -61,15 +69,14 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
     process.exit(0);
   }
 
-  const walletData = JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-  const account = new MemoryAccount(walletData.secretKey);
+  const account = loadAccount();
   const node = new Node(NODE_URL);
   const aeSdk = new AeSdk({
     nodes: [{ name: 'mainnet', instance: node }],
     accounts: [account],
   });
 
-  const INVITES_PATH = './.secrets/superhero-invites.json';
+  const INVITES_PATH = './.config/superhero-invites.json';
 
   function loadInvites() {
     if (fs.existsSync(INVITES_PATH)) {
@@ -79,7 +86,7 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
   }
 
   function saveInvites(invites) {
-    const dir = './.secrets';
+    const dir = './.config';
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(INVITES_PATH, JSON.stringify(invites, null, 2));
   }
@@ -118,7 +125,7 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
       // Build links and save locally
       const now = Date.now();
       const newInvites = keyPairs.map(kp => ({
-        inviter: walletData.address,
+        inviter: account.address,
         invite_address: kp.address,
         secret_key: kp.secretKey,
         link: `${INVITE_BASE_URL}${kp.secretKey}`,

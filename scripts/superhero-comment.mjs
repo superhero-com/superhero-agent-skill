@@ -5,8 +5,16 @@ import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 
 const CONTRACT_ADDRESS = 'ct_2Hyt9ZxzXra5NAzhePkRsDPDWppoatVD7CtHnUoHVbuehwR8Nb';
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
+
+function loadAccount() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
+    process.exit(1);
+  }
+  return new MemoryAccount(privateKey);
+}
 const API_BASE = 'https://api.superhero.com';
 
 async function main() {
@@ -22,8 +30,7 @@ async function main() {
         process.exit(1);
       }
 
-      const walletData = JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-      const account = new MemoryAccount(walletData.secretKey);
+      const account = loadAccount();
       const node = new Node(NODE_URL);
       const aeSdk = new AeSdk({
         nodes: [{ name: 'mainnet', instance: node }],

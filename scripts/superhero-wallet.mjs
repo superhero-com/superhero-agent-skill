@@ -1,86 +1,67 @@
 #!/usr/bin/env node
 // Wallet management for superhero.com / æternity blockchain
 // Generate new wallet, check balance, export address
-import { AeSdk, Node, MemoryAccount, Encoding, encode } from '@aeternity/aepp-sdk';
-import { randomBytes } from 'crypto';
-import fs from 'fs';
-import path from 'path';
+import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
 
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
 
-function walletExists() {
-  return fs.existsSync(WALLET_PATH);
-}
-
-function loadWallet() {
-  if (!walletExists()) {
-    console.error('No wallet found. Run: node scripts/superhero-wallet.mjs generate');
+function loadAccount() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set.');
+    console.error('Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
     process.exit(1);
   }
-  return JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
+  return new MemoryAccount(privateKey);
 }
 
 function generateWallet() {
-  if (walletExists()) {
-    console.error('Wallet already exists at', WALLET_PATH);
-    console.error('Delete it first if you want to regenerate.');
-    process.exit(1);
-  }
-  const secretKey = encode(randomBytes(32), Encoding.AccountSecretKey);
-  const account = new MemoryAccount(secretKey);
-  const walletData = {
+  const account = MemoryAccount.generate();
+  console.log(JSON.stringify({
+    success: true,
     address: account.address,
-    secretKey: secretKey,
-  };
-  const dir = path.dirname(WALLET_PATH);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(WALLET_PATH, JSON.stringify(walletData, null, 2));
-  console.log(JSON.stringify({ success: true, address: account.address }));
+    AE_PRIVATE_KEY: account.secretKey,
+    next_step: `export AE_PRIVATE_KEY=${account.secretKey}`,
+    warning: 'Save this private key securely. Back it up offline. Never commit it to git.',
+  }));
 }
 
 async function getBalance() {
-  const wallet = loadWallet();
+  const account = loadAccount();
   const node = new Node(NODE_URL);
   const sdk = new AeSdk({
     nodes: [{ name: 'mainnet', instance: node }],
   });
   try {
-    const balanceAettos = await sdk.getBalance(wallet.address);
+    const balanceAettos = await sdk.getBalance(account.address);
     const balanceAE = parseInt(balanceAettos) / 1e18;
     console.log(JSON.stringify({
-      address: wallet.address,
+      address: account.address,
       balance_ae: balanceAE,
       balance_aettos: balanceAettos,
     }));
   } catch (e) {
-    console.log(JSON.stringify({ address: wallet.address, balance_ae: 0, balance_aettos: '0' }));
+    console.log(JSON.stringify({ address: account.address, balance_ae: 0, balance_aettos: '0' }));
   }
 }
 
 function showAddress() {
-  const wallet = loadWallet();
-  console.log(JSON.stringify({ address: wallet.address }));
+  const account = loadAccount();
+  console.log(JSON.stringify({ address: account.address }));
 }
 
 function importWallet(secretKey) {
-  if (walletExists()) {
-    console.error('Wallet already exists at', WALLET_PATH);
-    process.exit(1);
-  }
   if (!secretKey) {
     console.error('Usage: node scripts/superhero-wallet.mjs import <secretKey>');
     process.exit(1);
   }
   const account = new MemoryAccount(secretKey);
-  const walletData = {
+  console.log(JSON.stringify({
+    success: true,
     address: account.address,
-    secretKey: secretKey,
-  };
-  const dir = path.dirname(WALLET_PATH);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(WALLET_PATH, JSON.stringify(walletData, null, 2));
-  console.log(JSON.stringify({ success: true, address: account.address }));
+    next_step: `export AE_PRIVATE_KEY=${secretKey}`,
+    warning: 'Save this private key securely. Back it up offline. Never commit it to git.',
+  }));
 }
 
 async function main() {
@@ -101,17 +82,20 @@ async function main() {
       importWallet(arg);
       break;
     case 'exists':
-      console.log(JSON.stringify({ exists: walletExists() }));
+      console.log(JSON.stringify({ exists: !!process.env.AE_PRIVATE_KEY }));
       break;
     case 'help':
     default:
       console.log(`
 Wallet Commands:
-  generate              Create a new wallet keypair
-  import <secretKey>    Import existing wallet by secret key
-  balance               Check wallet AE balance
-  address               Show wallet address
-  exists                Check if wallet file exists
+  generate              Create a new wallet keypair (outputs key once — save it)
+  import <secretKey>    Show setup instructions for an existing secret key
+  balance               Check wallet AE balance  (requires AE_PRIVATE_KEY env var)
+  address               Show wallet address      (requires AE_PRIVATE_KEY env var)
+  exists                Check if AE_PRIVATE_KEY env var is set
+
+Environment:
+  export AE_PRIVATE_KEY=<your_secret_key>
 `);
   }
 }

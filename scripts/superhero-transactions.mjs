@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // View on-chain transactions for tokens — filter by token, account, or see all
 
-import fs from 'fs';
+import { MemoryAccount } from '@aeternity/aepp-sdk';
 
 const API_BASE = 'https://api.superhero.com';
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 
 function loadAddress() {
-  if (!fs.existsSync(WALLET_PATH)) return null;
-  return JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8')).address;
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) return null;
+  return new MemoryAccount(privateKey).address;
 }
 
 function buildQuery(params) {

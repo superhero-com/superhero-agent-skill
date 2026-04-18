@@ -1,14 +1,17 @@
 #!/usr/bin/env node
 // Read posts, profile data from superhero.com via æternity middleware
-import fs from 'fs';
+import { MemoryAccount } from '@aeternity/aepp-sdk';
 
 const CONTRACT_ADDRESS = 'ct_2Hyt9ZxzXra5NAzhePkRsDPDWppoatVD7CtHnUoHVbuehwR8Nb';
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const MIDDLEWARE_URL = 'https://mainnet.aeternity.io/mdw/v3';
 
 function getWalletAddress() {
-  const walletData = JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-  return walletData.address;
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
+    process.exit(1);
+  }
+  return new MemoryAccount(privateKey).address;
 }
 
 async function getPostsFromAddress(address, limit = 20) {

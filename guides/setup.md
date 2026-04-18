@@ -18,12 +18,26 @@ Ask the user: **"Do you have an existing æternity wallet, or should I generate 
 node {baseDir}/scripts/superhero-wallet.mjs generate
 ```
 
-This creates `.secrets/aesh-wallet.json`. Tell the user their new address and that they need AE tokens for gas fees.
+This outputs a new `AE_PRIVATE_KEY` and `address`.
+
+Set the environment variable before running any other script:
+
+```bash
+export AE_PRIVATE_KEY=<your_secret_key>
+```
+
+For persistence across sessions, add it to `~/.zshenv` or `~/.profile` (never commit this to git).
 
 ### Option B: Import existing wallet
 
 ```bash
 node {baseDir}/scripts/superhero-wallet.mjs import "<secret_key>"
+```
+
+This validates the key and shows the setup command:
+
+```bash
+export AE_PRIVATE_KEY=<your_secret_key>
 ```
 
 ### Verify wallet
@@ -32,7 +46,7 @@ node {baseDir}/scripts/superhero-wallet.mjs import "<secret_key>"
 node {baseDir}/scripts/superhero-wallet.mjs balance
 ```
 
-If balance is 0, tell the user: "You need AE tokens to post or trade. Fund your wallet address with AE from an exchange or another wallet."
+Requires `AE_PRIVATE_KEY` to be set. If balance is 0, tell the user: "You need AE tokens to post or trade. Fund your wallet address with AE from an exchange or another wallet."
 
 ### On-Chain Username (AENS)
 
@@ -88,7 +102,7 @@ Provide cron examples if they want scheduled posting. Trading will always requir
 
 ### Config
 
-Store the chosen settings in `{baseDir}/.secrets/superhero-config.json`. Example for Moderate autonomous mode:
+Store the chosen settings in `{baseDir}/.config/superhero-config.json`. Example for Moderate autonomous mode:
 
 ```json
 {

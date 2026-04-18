@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 // View token holdings and portfolio history for your wallet or any account
 
-import fs from 'fs';
+import { MemoryAccount } from '@aeternity/aepp-sdk';
 
 const API_BASE = 'https://api.superhero.com';
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 
 function loadAddress() {
-  if (!fs.existsSync(WALLET_PATH)) {
-    console.error('No wallet found. Run: node scripts/superhero-wallet.mjs generate');
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
     process.exit(1);
   }
-  return JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8')).address;
+  return new MemoryAccount(privateKey).address;
 }
 
 async function main() {

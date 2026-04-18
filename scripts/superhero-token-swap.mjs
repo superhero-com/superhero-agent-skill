@@ -4,8 +4,16 @@ import { AeSdk, Node, MemoryAccount, formatAmount, AE_AMOUNT_FORMATS, Contract }
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
+
+function loadAccount() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
+    process.exit(1);
+  }
+  return new MemoryAccount(privateKey);
+}
 const SLIPPAGE_PERCENT = 3n;
 
 function toTokenDecimals(count, denominationDecimals, decimals) {
@@ -134,8 +142,7 @@ Note: Slippage is set to ${SLIPPAGE_PERCENT}%. Buy/sell require AE for gas.
   }
 
   // Commands requiring wallet
-  const walletData = JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-  const account = new MemoryAccount(walletData.secretKey);
+  const account = loadAccount();
   const node = new Node(NODE_URL);
   const aeSdk = new AeSdk({
     nodes: [{ name: 'mainnet', instance: node }],

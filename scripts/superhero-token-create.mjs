@@ -5,8 +5,16 @@ import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import fs from 'fs';
 import BigNumber from 'bignumber.js';
 
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
+
+function loadAccount() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
+    process.exit(1);
+  }
+  return new MemoryAccount(privateKey);
+}
 const FACTORY_ADDRESS = 'ct_25cqTw85wkF5cbcozmHHUCuybnfH9WaRZXSgEcNNXG9LsCJWTN';
 
 // Bonding curve constants (matches superhero-app frontend)
@@ -65,8 +73,7 @@ Note: Requires AE in wallet for gas. Initial buy is optional but establishes
     process.exit(0);
   }
 
-  const walletData = JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-  const account = new MemoryAccount(walletData.secretKey);
+  const account = loadAccount();
   const node = new Node(NODE_URL);
   const aeSdk = new AeSdk({
     nodes: [{ name: 'mainnet', instance: node }],
@@ -95,7 +102,7 @@ Note: Requires AE in wallet for gas. Initial buy is optional but establishes
       }
 
       // Check balance first
-      const balanceAetto = await aeSdk.getBalance(walletData.address);
+      const balanceAetto = await aeSdk.getBalance(account.address);
       const balanceAe = new BigNumber(balanceAetto.toString()).dividedBy(1e18);
       if (buyAe > 0 && balanceAe.lt(buyAe + 0.01)) {
         console.error(JSON.stringify({ error: 'Insufficient balance', balance_ae: balanceAe.toFixed(4), required_ae: (buyAe + 0.01).toFixed(4) }));

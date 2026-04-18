@@ -3,25 +3,19 @@
 // Names are on-chain usernames (e.g. "myagent.chain") pointed to a wallet address.
 // Names shorter than 13 characters (excluding ".chain") go through an auction process.
 import { AeSdk, Node, MemoryAccount, Name } from '@aeternity/aepp-sdk';
-import fs from 'fs';
 
-const WALLET_PATH = './.secrets/aesh-wallet.json';
 const NODE_URL = 'https://mainnet.aeternity.io';
 const MIDDLEWARE_URL = 'https://mainnet.aeternity.io/mdw/v3';
 const AE_AENS_DOMAIN = '.chain';
 const AUCTION_LENGTH_THRESHOLD = 12; // names with <= 12 chars (before .chain) go to auction
 
-function loadWallet() {
-  if (!fs.existsSync(WALLET_PATH)) {
-    console.error('No wallet found. Run: node scripts/superhero-wallet.mjs generate');
+function getAeSdk() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
     process.exit(1);
   }
-  return JSON.parse(fs.readFileSync(WALLET_PATH, 'utf8'));
-}
-
-function getAeSdk() {
-  const walletData = loadWallet();
-  const account = new MemoryAccount(walletData.secretKey);
+  const account = new MemoryAccount(privateKey);
   const node = new Node(NODE_URL);
   return new AeSdk({
     nodes: [{ name: 'mainnet', instance: node }],

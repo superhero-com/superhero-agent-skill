@@ -18,7 +18,56 @@ node {baseDir}/scripts/superhero-wallet.mjs exists
 ```
 
 - If `{ "exists": false }` → **First-time setup**. Read `{baseDir}/guides/setup.md` and walk the user through it.
-- If `{ "exists": true }` → **Already configured**. Skip to capabilities below.
+- If `{ "exists": true }` → **`AE_PRIVATE_KEY` is set**. Skip to capabilities below.
+
+## ⚠️ Security First
+
+| ✅ DO                                          | ❌ DON'T                               |
+| ---------------------------------------------- | -------------------------------------- |
+| Use **environment variables** for private keys | Store private keys in plain text files |
+| Use `export AE_PRIVATE_KEY=<key>` in shell     | Commit wallet files to git             |
+| Use `--env` mode (recommended)                 | Use `console.log(privateKey)`          |
+| Back up mnemonics **offline**                  | Share private keys or mnemonics        |
+
+## Setup Flow (first time only)
+
+### Option A: Generate new wallet
+
+```bash
+node {baseDir}/scripts/superhero-wallet.mjs generate
+```
+
+This outputs a new `AE_PRIVATE_KEY` and `address`.
+
+Set the environment variable before running any other script:
+
+```bash
+export AE_PRIVATE_KEY=<your_secret_key>
+```
+
+For persistence across sessions, add it to `~/.bash_profile` (never commit this to git).
+
+### Option B: Import existing wallet
+
+```bash
+node {baseDir}/scripts/superhero-wallet.mjs import "<secret_key>"
+```
+
+This validates the key and shows the setup command:
+
+```bash
+export AE_PRIVATE_KEY=<your_secret_key>
+```
+
+Read `{baseDir}/guides/setup.md` for full instructions. Summary:
+
+1. Install deps: `npm install @aeternity/aepp-sdk bignumber.js`
+2. Wallet: generate new or import existing secret key
+3. Set `AE_PRIVATE_KEY` env var: `export AE_PRIVATE_KEY=<key>`
+4. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
+   - **Autonomous** → Read `{baseDir}/guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
+   - **Manual** → Ask for posting schedule only; trading will be user-triggered
+5. Save config to `.config/superhero-config.json`
 
 ## Trading Mindset
 
@@ -68,17 +117,6 @@ Before creating any token, always follow these steps:
    - **Success** → share `tx_hash`, `sale_address`, and estimated tokens received
    - **Error/timeout** → share the error and suggest checking balance or retrying
 
-## Setup Flow (first time only)
-
-Read `{baseDir}/guides/setup.md` for full instructions. Summary:
-
-1. Install deps: `npm install @aeternity/aepp-sdk bignumber.js`
-2. Wallet: generate new or import existing secret key
-3. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
-   - **Autonomous** → Read `{baseDir}/guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
-   - **Manual** → Ask for posting schedule only; trading will be user-triggered
-4. Save config to `.secrets/superhero-config.json`
-
 ## Autonomous vs Manual Mode
 
 When the user asks you to run autonomously, always clarify strategy before proceeding. Ask:
@@ -98,7 +136,7 @@ In **manual mode**, you still scan trends and report what you would do, but wait
 
 If the user wants to change posting frequency, trading mode, or other settings:
 
-1. Read current config: `{baseDir}/.secrets/superhero-config.json`
+1. Read current config: `{baseDir}/.config/superhero-config.json`
 2. Ask what they want to change
 3. Update the config file
 4. Key settings:
@@ -110,7 +148,7 @@ If the user wants to change posting frequency, trading mode, or other settings:
    - `trading.max_trade_percent_of_balance` — max % of wallet per trade
    - `trading.max_positions` — maximum number of concurrent holdings
 
-### Registration Flow
+### Registration .chain Name Flow
 
 When a user wants to register a name:
 
