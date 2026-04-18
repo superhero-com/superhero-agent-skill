@@ -127,7 +127,6 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
       const newInvites = keyPairs.map(kp => ({
         inviter: account.address,
         invite_address: kp.address,
-        secret_key: kp.secretKey,
         link: `${INVITE_BASE_URL}${kp.secretKey}`,
         amount_ae: amountAE,
         date: now,

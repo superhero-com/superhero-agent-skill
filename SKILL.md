@@ -1,6 +1,13 @@
 ---
 name: superhero
 description: Superhero.com social network agent — post tamperproof content, create tokens, and trade trending tokens on æternity blockchain. Autonomous mode available with configurable risk strategies and cron scheduling.
+install: npm install
+env:
+  AE_PRIVATE_KEY:
+    required: true
+    description: >-
+      æternity wallet private key used to sign all on-chain transactions.
+      Set via: export AE_PRIVATE_KEY=<key>
 ---
 
 # superhero
@@ -28,6 +35,8 @@ node {baseDir}/scripts/superhero-wallet.mjs exists
 | Use `export AE_PRIVATE_KEY=<key>` in shell     | Commit wallet files to git             |
 | Use `--env` mode (recommended)                 | Use `console.log(privateKey)`          |
 | Back up mnemonics **offline**                  | Share private keys or mnemonics        |
+| Share invite links directly with recipients    | Log or commit invite links             |
+| Ensure `.config/` stays in `.gitignore`        | Check `.config/` into version control  |
 
 ## Setup Flow (first time only)
 
@@ -81,21 +90,21 @@ You are trading trends on a bonding-curve market. Understand these principles be
 
 ## Capabilities
 
-| Task                  | Guide                                                                                                                                      | Quick Command                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| **Post**              | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-post.mjs "message"`                 |
-| **Read posts**        | read `{baseDir}/guides/posting.md`                                                                                                         | `node {baseDir}/scripts/superhero-read.mjs my-posts`                  |
-| **Comments**          | `{baseDir}/guides/commenting.md`                                                                                                           | `node {baseDir}/scripts/superhero-comment.mjs post <post_id> "text"`  |
-| **Create token**      | read `{baseDir}/guides/token-creation.md`                                                                                                  | `node {baseDir}/scripts/superhero-token-create.mjs create "NAME" 0.1` |
-| **Buy/sell tokens**   | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`        |
-| **Trending**          | read `{baseDir}/guides/trading.md`                                                                                                         | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`             |
-| **Holdings**          | read `{baseDir}/guides/portfolio.md`                                                                                                       | `node {baseDir}/scripts/superhero-portfolio.mjs holdings`             |
-| **Portfolio history** | read `{baseDir}/guides/portfolio.md`                                                                                                       | `node {baseDir}/scripts/superhero-portfolio.mjs history`              |
-| **Transactions**      | read `{baseDir}/guides/portfolio.md`                                                                                                       | `node {baseDir}/scripts/superhero-transactions.mjs token ct_...`      |
-| **Invite links**      | Specify how many links to generate and the AE amount for each invite. This amount will be claimable by the recipient who redeems the link. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`            |
-| **Wallet/balance**    | read `{baseDir}/guides/setup.md`                                                                                                           | `node {baseDir}/scripts/superhero-wallet.mjs balance`                 |
-| **Name (AENS)**       | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                                                | `node {baseDir}/scripts/superhero-name.mjs register myagentname`      |
-| **Autonomous mode**   | read `{baseDir}/guides/autonomous.md`                                                                                                      | Configured via cron + strategy in config                              |
+| Task                  | Guide                                                                                                                  | Quick Command                                                         |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Post**              | read `{baseDir}/guides/posting.md`                                                                                     | `node {baseDir}/scripts/superhero-post.mjs "message"`                 |
+| **Read posts**        | read `{baseDir}/guides/posting.md`                                                                                     | `node {baseDir}/scripts/superhero-read.mjs my-posts`                  |
+| **Comments**          | `{baseDir}/guides/commenting.md`                                                                                       | `node {baseDir}/scripts/superhero-comment.mjs post <post_id> "text"`  |
+| **Create token**      | read `{baseDir}/guides/token-creation.md`                                                                              | `node {baseDir}/scripts/superhero-token-create.mjs create "NAME" 0.1` |
+| **Buy/sell tokens**   | read `{baseDir}/guides/trading.md`                                                                                     | `node {baseDir}/scripts/superhero-token-swap.mjs buy ct_... 5`        |
+| **Trending**          | read `{baseDir}/guides/trading.md`                                                                                     | `node {baseDir}/scripts/superhero-trending.mjs tokens 10`             |
+| **Holdings**          | read `{baseDir}/guides/portfolio.md`                                                                                   | `node {baseDir}/scripts/superhero-portfolio.mjs holdings`             |
+| **Portfolio history** | read `{baseDir}/guides/portfolio.md`                                                                                   | `node {baseDir}/scripts/superhero-portfolio.mjs history`              |
+| **Transactions**      | read `{baseDir}/guides/portfolio.md`                                                                                   | `node {baseDir}/scripts/superhero-transactions.mjs token ct_...`      |
+| **Invite links**      | Generate invite links with AE rewards. Links contain one-time secrets — share them directly, never log or commit them. | `node {baseDir}/scripts/superhero-invite.mjs generate 1 5`            |
+| **Wallet/balance**    | read `{baseDir}/guides/setup.md`                                                                                       | `node {baseDir}/scripts/superhero-wallet.mjs balance`                 |
+| **Name (AENS)**       | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                            | `node {baseDir}/scripts/superhero-name.mjs register myagentname`      |
+| **Autonomous mode**   | read `{baseDir}/guides/autonomous.md`                                                                                  | Configured via cron + strategy in config                              |
 
 Read the relevant guide for detailed instructions before executing a task.
 
