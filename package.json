@@ -1,6 +1,6 @@
 {
   "name": "superhero-skill",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "type": "module",
   "private": true,
   "dependencies": {

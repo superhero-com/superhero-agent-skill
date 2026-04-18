@@ -1,13 +1,14 @@
 ---
 name: superhero
 description: Superhero.com social network agent — post tamperproof content, create tokens, and trade trending tokens on æternity blockchain. Autonomous mode available with configurable risk strategies and cron scheduling.
-install: npm install
-env:
-  AE_PRIVATE_KEY:
-    required: true
-    description: >-
-      æternity wallet private key used to sign all on-chain transactions.
-      Set via: export AE_PRIVATE_KEY=<key>
+metadata:
+  {
+    "openclaw":
+      {
+        "requires": { "env": ["AE_PRIVATE_KEY"] },
+        "primaryEnv": "AE_PRIVATE_KEY",
+      },
+  }
 ---
 
 # superhero
