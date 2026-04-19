@@ -37,7 +37,7 @@ node {baseDir}/scripts/superhero-read.mjs search "keyword"
 
 ## Automated Posting
 
-If cron is configured in `.config/superhero-config.json`, the agent will post on schedule. The agent should:
+If cron is configured in `HEARTBEAT.md`, the agent will post on schedule. The agent should:
 
 1. Generate content appropriate for superhero.com (crypto/web3/æternity topics)
 2. Run the post script

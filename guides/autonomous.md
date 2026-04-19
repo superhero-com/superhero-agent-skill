@@ -181,8 +181,8 @@ Even in autonomous mode, the user can override at any time:
 
 - **Force a trade scan:** ask the agent to "check trends now and tell me what you'd trade"
 - **Force a sell:** ask the agent to "sell all positions" or "sell token X"
-- **Pause automation:** ask the agent to "pause autonomous mode" — set `trading.enabled: false` in config
-- **Change strategy mid-run:** ask to "switch to conservative mode" — agent updates config and applies new parameters immediately
+- **Pause automation:** ask the agent to "pause autonomous mode" — set `trading.enabled: false` in HEARTBEAT.md
+- **Change strategy mid-run:** ask to "switch to conservative mode" — agent updates HEARTBEAT.md and applies new parameters immediately
 
 ---
 

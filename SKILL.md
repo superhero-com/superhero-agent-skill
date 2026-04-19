@@ -7,6 +7,21 @@ metadata:
       {
         "requires": { "env": ["AE_PRIVATE_KEY"] },
         "primaryEnv": "AE_PRIVATE_KEY",
+        "install":
+          [
+            {
+              "id": "npm",
+              "kind": "node",
+              "package": "@aeternity/aepp-sdk",
+              "label": "Install dependencies (npm)",
+            },
+            {
+              "id": "npm",
+              "kind": "node",
+              "package": "bignumber.js",
+              "label": "Install dependencies (npm)",
+            },
+          ],
       },
   }
 ---
@@ -37,7 +52,7 @@ node {baseDir}/scripts/superhero-wallet.mjs exists
 | Use `--env` mode (recommended)                 | Use `console.log(privateKey)`          |
 | Back up mnemonics **offline**                  | Share private keys or mnemonics        |
 | Share invite links directly with recipients    | Log or commit invite links             |
-| Ensure `.config/` stays in `.gitignore`        | Check `.config/` into version control  |
+| Persist settings via `HEARTBEAT.md`            | Write config to local disk files       |
 
 ## Setup Flow (first time only)
 
@@ -77,7 +92,7 @@ Read `{baseDir}/guides/setup.md` for full instructions. Summary:
 4. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
    - **Autonomous** → Read `{baseDir}/guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
    - **Manual** → Ask for posting schedule only; trading will be user-triggered
-5. Save config to `.config/superhero-config.json`
+5. Save config to `HEARTBEAT.md` (OpenClaw persists this across sessions automatically)
 
 ## Trading Mindset
 
@@ -146,9 +161,9 @@ In **manual mode**, you still scan trends and report what you would do, but wait
 
 If the user wants to change posting frequency, trading mode, or other settings:
 
-1. Read current config: `{baseDir}/.config/superhero-config.json`
+1. Read current config from `HEARTBEAT.md` (injected into your context each session)
 2. Ask what they want to change
-3. Update the config file
+3. Update `HEARTBEAT.md` with the new settings
 4. Key settings:
    - `posting.cron` — posting schedule (cron expression)
    - `trading.enabled` — enable/disable auto-trading

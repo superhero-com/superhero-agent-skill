@@ -102,7 +102,7 @@ Provide cron examples if they want scheduled posting. Trading will always requir
 
 ### Config
 
-Store the chosen settings in `{baseDir}/.config/superhero-config.json`. Example for Moderate autonomous mode:
+Store the chosen settings in `HEARTBEAT.md` so they persist across sessions (OpenClaw injects this file automatically). Example for Moderate autonomous mode:
 
 ```json
 {

@@ -51,16 +51,12 @@ Invite Commands:
     amount_ae   AE gift per invite link
     count       Number of links to generate (default: 1)
 
-  list
-    List all previously generated invite links (from local store)
-
   revoke <invite_address>
     Revoke an unused invite and reclaim funds
 
 Examples:
   node scripts/superhero-invite.mjs generate 1 5
   node scripts/superhero-invite.mjs generate 0.5
-  node scripts/superhero-invite.mjs list
   node scripts/superhero-invite.mjs revoke ak_...
 
 Note: Total cost = (amount_ae + redemption_fee) × count + gas.
@@ -75,21 +71,6 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
     nodes: [{ name: 'mainnet', instance: node }],
     accounts: [account],
   });
-
-  const INVITES_PATH = './.config/superhero-invites.json';
-
-  function loadInvites() {
-    if (fs.existsSync(INVITES_PATH)) {
-      return JSON.parse(fs.readFileSync(INVITES_PATH, 'utf8'));
-    }
-    return [];
-  }
-
-  function saveInvites(invites) {
-    const dir = './.config';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(INVITES_PATH, JSON.stringify(invites, null, 2));
-  }
 
   switch (command) {
     case 'generate': {
@@ -122,19 +103,12 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
         { amount: totalCost.toString() },
       );
 
-      // Build links and save locally
-      const now = Date.now();
+      // Build links and output to caller
       const newInvites = keyPairs.map(kp => ({
-        inviter: account.address,
         invite_address: kp.address,
         link: `${INVITE_BASE_URL}${kp.secretKey}`,
         amount_ae: amountAE,
-        date: now,
-        redeemed: false,
       }));
-
-      const existingInvites = loadInvites();
-      saveInvites([...newInvites, ...existingInvites]);
 
       console.log(JSON.stringify({
         success: true,
@@ -144,12 +118,6 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
         tx_hash: result.hash,
         links: newInvites.map(i => i.link),
       }));
-      break;
-    }
-
-    case 'list': {
-      const invites = loadInvites();
-      console.log(JSON.stringify(invites, null, 2));
       break;
     }
 
@@ -163,11 +131,6 @@ Note: Total cost = (amount_ae + redemption_fee) × count + gas.
       const treasury = await getTreasury(aeSdk);
       console.error(`Revoking invite ${inviteAddress}...`);
       const result = await treasury.revoke_invitation_code(inviteAddress);
-
-      // Update local store
-      const invites = loadInvites();
-      const updated = invites.filter(i => i.invite_address !== inviteAddress);
-      saveInvites(updated);
 
       console.log(JSON.stringify({
         success: true,

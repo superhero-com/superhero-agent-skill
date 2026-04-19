@@ -23,6 +23,15 @@ function getAeSdk() {
   });
 }
 
+function loadWallet() {
+  const privateKey = process.env.AE_PRIVATE_KEY;
+  if (!privateKey) {
+    console.error('AE_PRIVATE_KEY environment variable is not set. Set it with: export AE_PRIVATE_KEY=<your_secret_key>');
+    process.exit(1);
+  }
+  return { address: new MemoryAccount(privateKey).address };
+}
+
 function normalizeName(input) {
   const name = input.endsWith(AE_AENS_DOMAIN) ? input : input + AE_AENS_DOMAIN;
   return name.toLowerCase();
