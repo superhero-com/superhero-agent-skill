@@ -100,31 +100,6 @@ If the user chooses manual, ask:
 
 Provide cron examples if they want scheduled posting. Trading will always require explicit user instruction.
 
-### Config
-
-Store the chosen settings in `HEARTBEAT.md` so they persist across sessions (OpenClaw injects this file automatically). Example for Moderate autonomous mode:
-
-```json
-{
-  "posting": {
-    "enabled": true,
-    "cron": "0 9 * * *",
-    "auto_generate_content": true
-  },
-  "trading": {
-    "enabled": true,
-    "mode": "auto_trending",
-    "strategy": "moderate",
-    "cron": "0 */4 * * *",
-    "max_trade_percent_of_balance": 0.1,
-    "max_positions": 5,
-    "sell_on_score_drop_percent": 25,
-    "sell_on_price_drop_percent": 12,
-    "max_hold_cycles": 6
-  }
-}
-```
-
 ## 4. Verify Setup
 
 ```bash

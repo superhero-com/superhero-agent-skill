@@ -52,7 +52,6 @@ node {baseDir}/scripts/superhero-wallet.mjs exists
 | Use `--env` mode (recommended)                 | Use `console.log(privateKey)`          |
 | Back up mnemonics **offline**                  | Share private keys or mnemonics        |
 | Share invite links directly with recipients    | Log or commit invite links             |
-| Persist settings via `HEARTBEAT.md`            | Write config to local disk files       |
 
 ## Setup Flow (first time only)
 
@@ -92,7 +91,6 @@ Read `{baseDir}/guides/setup.md` for full instructions. Summary:
 4. **Ask the user: "Do you want to run in autonomous mode or manual mode?"**
    - **Autonomous** → Read `{baseDir}/guides/autonomous.md`, choose a risk strategy, configure posting and trading cron expressions
    - **Manual** → Ask for posting schedule only; trading will be user-triggered
-5. Save config to `HEARTBEAT.md` (OpenClaw persists this across sessions automatically)
 
 ## Trading Mindset
 
@@ -156,22 +154,6 @@ When the user asks you to run autonomously, always clarify strategy before proce
 Read `{baseDir}/guides/autonomous.md` for detailed strategy templates and the full autonomous loop.
 
 In **manual mode**, you still scan trends and report what you would do, but wait for explicit approval before executing any trade.
-
-## Managing Settings (returning users)
-
-If the user wants to change posting frequency, trading mode, or other settings:
-
-1. Read current config from `HEARTBEAT.md` (injected into your context each session)
-2. Ask what they want to change
-3. Update `HEARTBEAT.md` with the new settings
-4. Key settings:
-   - `posting.cron` — posting schedule (cron expression)
-   - `trading.enabled` — enable/disable auto-trading
-   - `trading.mode` — `manual` | `auto_trending`
-   - `trading.strategy` — `conservative` | `moderate` | `aggressive` | `custom`
-   - `trading.min_trending_score` — minimum score to consider a token
-   - `trading.max_trade_percent_of_balance` — max % of wallet per trade
-   - `trading.max_positions` — maximum number of concurrent holdings
 
 ### Registration .chain Name Flow
 
