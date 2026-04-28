@@ -15,7 +15,11 @@ function getWalletAddress() {
 }
 
 async function getPostsFromAddress(address, limit = 20) {
-  const url = `${MIDDLEWARE_URL}/accounts/${address}/activities?limit=${limit * 2}`;
+  const url = new URL(`${MIDDLEWARE_URL}/transactions`);
+  url.searchParams.set('contract', CONTRACT_ADDRESS);
+  url.searchParams.set('limit', String(limit));
+  url.searchParams.set('account', address);
+
   const response = await fetch(url);
   const data = await response.json();
 
@@ -25,20 +29,16 @@ async function getPostsFromAddress(address, limit = 20) {
   }
 
   return data.data
-    .filter(activity =>
-      activity.type === 'ContractCallTxEvent' &&
-      activity.payload?.tx?.contract_id === CONTRACT_ADDRESS &&
-      activity.payload?.tx?.function === 'post_without_tip'
-    )
-    .map(activity => {
-      const tx = activity.payload.tx;
+    .filter(transaction => transaction.tx?.function === 'post_without_tip')
+    .map(transaction => {
+      const tx = transaction.tx;
       return {
-        txHash: activity.payload.hash,
+        txHash: transaction.hash,
         postId: tx.return?.value || null,
         content: tx.arguments[0]?.value || '',
         links: tx.arguments[1]?.value?.map(v => v.value) || [],
-        timestamp: new Date(activity.payload.micro_time).toISOString(),
-        height: activity.height,
+        timestamp: new Date(transaction.micro_time).toISOString(),
+        height: transaction.block_height,
       };
     })
     .slice(0, limit);
