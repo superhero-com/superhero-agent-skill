@@ -8,6 +8,7 @@ const NODE_URL = 'https://mainnet.aeternity.io';
 const MIDDLEWARE_URL = 'https://mainnet.aeternity.io/mdw/v3';
 const AE_AENS_DOMAIN = '.chain';
 const AUCTION_LENGTH_THRESHOLD = 12; // names with <= 12 chars (before .chain) go to auction
+const NEXT_BLOCK_POLL_INTERVAL_MS = 30000;
 
 function getAeSdk() {
   const privateKey = process.env.AE_PRIVATE_KEY;
@@ -56,8 +57,45 @@ function isNotFoundError(error) {
   return error?.statusCode === 404 || error?.response?.status === 404;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getTxHash(result) {
+  if (typeof result === 'string' && result.startsWith('th_')) return result;
+  return result?.hash || result?.txHash || result?.transaction?.hash || null;
+}
+
 function getAccountPointer(pointers) {
   return pointers.find((p) => p.key === 'account_pubkey');
+}
+
+async function getTopBlockHeight() {
+  const res = await fetch(`${NODE_URL}/v3/headers/top`);
+  if (!res.ok) {
+    throw new Error(`Unable to fetch current block height: ${res.status} ${res.statusText}`);
+  }
+
+  const header = await res.json();
+  const height = Number(header.height);
+  if (!Number.isInteger(height)) {
+    throw new Error('Unable to fetch current block height: invalid node response');
+  }
+
+  return height;
+}
+
+async function waitForNextBlock(previousHeight) {
+  let currentHeight = await getTopBlockHeight();
+  const targetHeight = Math.max(previousHeight, currentHeight) + 1;
+
+  while (currentHeight < targetHeight) {
+    console.error(`Waiting for next block (${currentHeight}/${targetHeight})...`);
+    await sleep(NEXT_BLOCK_POLL_INTERVAL_MS);
+    currentHeight = await getTopBlockHeight();
+  }
+
+  return currentHeight;
 }
 
 async function getNameState(sdk, name) {
@@ -135,7 +173,16 @@ async function registerName(rawName) {
   }
 
   console.error(`Step 1/3: Preclaiming "${name}"...`);
-  await nameObj.preclaim();
+  const preclaimResult = await nameObj.preclaim();
+  const preclaimTxHash = getTxHash(preclaimResult);
+  if (preclaimTxHash) {
+    console.error('Waiting for preclaim transaction to be mined...');
+    await aeSdk.poll(preclaimTxHash);
+  }
+
+  const preclaimHeight = await getTopBlockHeight();
+  console.error(`Preclaim mined at block ${preclaimHeight}. Waiting for a different block before claim...`);
+  await waitForNextBlock(preclaimHeight);
 
   console.error(`Step 2/3: Claiming "${name}"...`);
   const claimResult = await nameObj.claim();
