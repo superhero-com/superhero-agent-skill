@@ -23,6 +23,13 @@ function getAeSdk() {
   });
 }
 
+function getNodeSdk() {
+  const node = new Node(NODE_URL);
+  return new AeSdk({
+    nodes: [{ name: 'mainnet', instance: node }],
+  });
+}
+
 function loadWallet() {
   const privateKey = process.env.AE_PRIVATE_KEY;
   if (!privateKey) {
@@ -45,17 +52,31 @@ function isAuctionName(name) {
   return getNameLength(name) <= AUCTION_LENGTH_THRESHOLD;
 }
 
+function isNotFoundError(error) {
+  return error?.statusCode === 404 || error?.response?.status === 404;
+}
+
+function getAccountPointer(pointers) {
+  return pointers.find((p) => p.key === 'account_pubkey');
+}
+
+async function getNameState(sdk, name) {
+  const nameObj = new Name(name, sdk.getContext());
+  return nameObj.getState();
+}
+
 // ── Check if a name is available ──────────────────────────────────────────────
 async function checkAvailability(rawName) {
   const name = normalizeName(rawName);
   const nameLen = getNameLength(name);
   const needsAuction = isAuctionName(name);
 
-  // Query the middleware for name state
-  const url = `${MIDDLEWARE_URL}/names/${encodeURIComponent(name)}`;
-  const res = await fetch(url);
-
-  if (res.status === 404) {
+  const sdk = getNodeSdk();
+  let entry;
+  try {
+    entry = await getNameState(sdk, name);
+  } catch (error) {
+    if (!isNotFoundError(error)) throw error;
     console.log(JSON.stringify({
       name,
       available: true,
@@ -68,16 +89,13 @@ async function checkAvailability(rawName) {
     return;
   }
 
-  const data = await res.json();
-  const status = data.status || (data.info?.expireHeight ? 'active' : 'unknown');
-
   console.log(JSON.stringify({
     name,
     available: false,
-    status,
-    owner: data.info?.ownership?.current || data.owner || null,
-    expires_at_height: data.info?.expireHeight || null,
-    pointers: data.info?.pointers || [],
+    status: 'active',
+    owner: entry.owner || null,
+    expires_at_height: entry.ttl || null,
+    pointers: entry.pointers || [],
     length: nameLen,
     needs_auction: needsAuction,
   }));
@@ -201,10 +219,12 @@ async function getNameByAddress(address) {
 // ── Resolve a .chain name to its pointed address ─────────────────────────────
 async function resolveName(rawName) {
   const name = normalizeName(rawName);
-  const url = `${MIDDLEWARE_URL}/names/${encodeURIComponent(name)}`;
-  const res = await fetch(url);
-
-  if (res.status === 404) {
+  const sdk = getNodeSdk();
+  let entry;
+  try {
+    entry = await getNameState(sdk, name);
+  } catch (error) {
+    if (!isNotFoundError(error)) throw error;
     console.log(JSON.stringify({
       name,
       resolved: false,
@@ -213,16 +233,15 @@ async function resolveName(rawName) {
     process.exit(1);
   }
 
-  const data = await res.json();
-  const pointers = data.info?.pointers || [];
-  const accountPointer = pointers.find((p) => p.key === 'account_pubkey');
+  const pointers = entry.pointers || [];
+  const accountPointer = getAccountPointer(pointers);
 
   console.log(JSON.stringify({
     name,
     resolved: true,
     address: accountPointer?.id || null,
-    owner: data.info?.ownership?.current || null,
-    expires_at_height: data.info?.expireHeight || null,
+    owner: entry.owner || null,
+    expires_at_height: entry.ttl || null,
     pointers,
   }));
 }
