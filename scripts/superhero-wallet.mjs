@@ -2,6 +2,7 @@
 // Wallet management for superhero.com / æternity blockchain
 // Generate new wallet, check balance, export address
 import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
+import BigNumber from 'bignumber.js';
 
 const NODE_URL = 'https://mainnet.aeternity.io';
 
@@ -34,14 +35,14 @@ async function getBalance() {
   });
   try {
     const balanceAettos = await sdk.getBalance(account.address);
-    const balanceAE = parseInt(balanceAettos) / 1e18;
+    const balanceAE = new BigNumber(balanceAettos).dividedBy(1e18);
     console.log(JSON.stringify({
       address: account.address,
-      balance_ae: balanceAE,
+      balance_ae: balanceAE.toString(),
       balance_aettos: balanceAettos,
     }));
   } catch (e) {
-    console.log(JSON.stringify({ address: account.address, balance_ae: 0, balance_aettos: '0' }));
+    console.log(JSON.stringify({ address: account.address, balance_ae: '0', balance_aettos: '0' }));
   }
 }
 
