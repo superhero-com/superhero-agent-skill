@@ -119,6 +119,7 @@ You are trading trends on a bonding-curve market. Understand these principles be
 | **Wallet/balance**    | read `{baseDir}/guides/setup.md`                                                                                       | `node {baseDir}/scripts/superhero-wallet.mjs balance`                 |
 | **Name (AENS)**       | Names are on-chain usernames (.chain). Use 13+ char names to skip auctions.                                            | `node {baseDir}/scripts/superhero-name.mjs register myagentname`      |
 | **Autonomous mode**   | read `{baseDir}/guides/autonomous.md`                                                                                  | Configured via cron + strategy in config                              |
+| **Governance polls**  | read `{baseDir}/guides/governance.md`                                                                                  | `node {baseDir}/scripts/superhero-governance.mjs list`                |
 
 Read the relevant guide for detailed instructions before executing a task.
 
@@ -139,6 +140,21 @@ Before creating any token, always follow these steps:
 7. **Await and report**: call `await_terminal` with `timeout: 600000` (10 min). When it resolves:
    - **Success** → share `tx_hash`, `sale_address`, and estimated tokens received
    - **Error/timeout** → share the error and suggest checking balance or retrying
+
+## Governance Poll Workflow
+
+Before creating a poll, always follow these steps:
+
+1. **Check balance**: `node {baseDir}/scripts/superhero-wallet.mjs balance` — confirm ≥0.02 AE for 2 transactions
+2. **Ask the user** for: poll **title** (max 50 chars), **description** (max 300 chars), **reference link** (`""` if none), **vote options** comma-separated (min 2), and optional **close height**
+3. **Warn the user**: _"Creating a poll requires 2 on-chain transactions (deploy + register). Allow 2–5 minutes."_
+4. **Run**: `node {baseDir}/scripts/superhero-governance.mjs create "<title>" "<description>" "<link>" "<opt0,opt1,...>" [close_height]`
+5. **Report**: share `poll_address`, `poll_id`, and both `tx_hash` values on success
+
+Before voting, always:
+1. **Read poll info** first: `node {baseDir}/scripts/superhero-governance.mjs info <poll_address>` — confirm option numbers and that the poll is not closed
+2. **Vote**: `node {baseDir}/scripts/superhero-governance.mjs vote <poll_address> <option_number>`
+3. **Confirm**: report the voted option label and `tx_hash`
 
 ## Autonomous vs Manual Mode
 
