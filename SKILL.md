@@ -146,13 +146,13 @@ Before creating any token, always follow these steps:
 Before creating a poll, always follow these steps:
 
 1. **Check balance**: `node {baseDir}/scripts/superhero-wallet.mjs balance` — confirm ≥0.02 AE for 2 transactions
-2. **Ask the user** for: poll **title** (max 50 chars), **description** (max 300 chars), **reference link** (`""` if none), **vote options** comma-separated (min 2), and optional **close height**
+2. **Ask the user** for: poll **title** (max 50 chars), **description** (max 300 chars), **reference link** (`http://` or `https://` required), **vote options** comma-separated (min 2), optional **close height** (`0` or omit for open-ended), and whether the poll should be listed
 3. **Warn the user**: _"Creating a poll requires 2 on-chain transactions (deploy + register). Allow 2–5 minutes."_
-4. **Run**: `node {baseDir}/scripts/superhero-governance.mjs create "<title>" "<description>" "<link>" "<opt0,opt1,...>" [close_height]`
+4. **Run**: `node {baseDir}/scripts/superhero-governance.mjs create "<title>" "<description>" "<link>" "<opt0,opt1,...>" [close_height] [--unlisted]`
 5. **Report**: share `poll_address`, `poll_id`, and both `tx_hash` values on success
 
 Before voting, always:
-1. **Read poll info** first: `node {baseDir}/scripts/superhero-governance.mjs info <poll_address>` — confirm option numbers and that the poll is not closed
+1. **Read poll info** first: `node {baseDir}/scripts/superhero-governance.mjs info <poll_address>` or `info-by-id <poll_id>` — confirm option numbers and that the poll is not closed. Treat `stake_weighted_results` as official; `raw_vote_counts` are address counts only.
 2. **Vote**: `node {baseDir}/scripts/superhero-governance.mjs vote <poll_address> <option_number>`
 3. **Confirm**: report the voted option label and `tx_hash`
 
